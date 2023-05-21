@@ -45,7 +45,7 @@ class MainProgram(framework.Framework):
     snapshot_counter = 0
 
     def __init__(self, root):
-        # Threads and Rows integers only
+        # Threads and Rows integers o
         self.threads = tk.IntVar()
         self.rows = tk.IntVar()
 
@@ -53,6 +53,10 @@ class MainProgram(framework.Framework):
         self.checkCmd_1 = tk.StringVar()
         self.checkCmd_2 = tk.StringVar()
         self.checkCmd_3 = tk.StringVar()
+
+        self.selected_toolbar_func_index = tk.StringVar
+
+        self.menubar = tk.Menu
 
         self.window = tk.Frame
         self.top_frame = tk.Frame
@@ -93,26 +97,18 @@ class MainProgram(framework.Framework):
 
         self.top_frame = tk.Frame(self.window, bg=self.main_bg_color)
 
-        # get path to folder where program sits
-        # current directory
-        c_dir = Path.cwd()
-        icons_folder = c_dir / 'icons/'
-
-
-
-
-        # create icons tuple
+        # Create icons tuple
         icons = ('2plus', '2drop', 'add_rows', 'drop_rows', 'snapshot', 'drop_snapshot')
         for i, icon in enumerate(icons):
             if i == 0:
-                # print(icons_folder / '{}.gif'.format(icon))
-                tool_bar_icon = tk.PhotoImage(file=icons_folder / '{}.gif'.format(icon))
+
+                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 1:
-                tool_bar_icon = tk.PhotoImage(file=icons_folder / '{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
@@ -133,13 +129,13 @@ class MainProgram(framework.Framework):
                 tk.Label(self.top_frame, bg=self.main_bg_color, width=10).pack(side='left')
 
             if i == 2:
-                tool_bar_icon = tk.PhotoImage(file=icons_folder / '{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 3:
-                tool_bar_icon = tk.PhotoImage(file=icons_folder / '{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
@@ -286,7 +282,7 @@ class MainProgram(framework.Framework):
                     print(error)
 
             # path to snapshot file
-            path_to_file = snap_dir_path / 'snapshot_1.txt'
+            path_to_file = snap_dir_path / "snapshot_1.txt"
             file = open(path_to_file, 'w')
             file.write(str(my_dict))
             file.close()
@@ -360,7 +356,7 @@ class MainProgram(framework.Framework):
                     print(error)
 
             # path to snapshot file
-            path_to_file = snap_dir_path / 'snapshot_2.txt'
+            path_to_file = snap_dir_path / "snapshot_2.txt"
             file = open(path_to_file, 'w')
             file.write(str(my_dict))
             file.close()
@@ -433,7 +429,7 @@ class MainProgram(framework.Framework):
                     print(error)
 
             # path to snapshot file
-            path_to_file = snap_dir_path / 'snapshot_3.txt'
+            path_to_file = snap_dir_path / "snapshot_3.txt"
             file = open(path_to_file, 'w')
             file.write(str(my_dict))
             file.close()
@@ -506,7 +502,7 @@ class MainProgram(framework.Framework):
                     print(error)
 
             # path to snapshot file
-            path_to_file = snap_dir_path / 'snapshot_4.txt'
+            path_to_file = snap_dir_path / "snapshot_4.txt"
             file = open(path_to_file, 'w')
             file.write(str(my_dict))
             file.close()
@@ -628,14 +624,6 @@ class MainProgram(framework.Framework):
                     self.main_array[row].append(0)
 
         self.main_array[0][1] = 0
-        # self.main_array[0][0] = 3
-        # self.main_array[1][3] = 2
-        # self.main_array[59][0] = 4
-        # self.main_array[4][0] = 3
-
-
-        for i in range(len(self.main_array)):
-            print(self.main_array[i])
 
     # COLORS
     def colors(self):
@@ -651,8 +639,6 @@ class MainProgram(framework.Framework):
                 half_colors_2 = half_colors_1[::-1]
                 half_colors_2.pop()
                 self.colors_list = half_colors_1 + half_colors_2
-
-        print(self.colors_list)
 
     def threads_colors_array_handler(self):
 
@@ -691,10 +677,9 @@ class MainProgram(framework.Framework):
     def selected_tool_bar_item(self, i):
         self.selected_toolbar_func_index = i
         self.execute_method()
-        print('You selected button ', self.selected_toolbar_func_index)
 
     def execute_method(self):
-        fnc = getattr(self, self.tool_bar_functions[self.selected_toolbar_func_index])
+        fnc = getattr(self, self.tool_bar_functions[int(self.selected_toolbar_func_index)])
         fnc()
 
     def add_two_thread_from_left(self):
@@ -730,10 +715,7 @@ class MainProgram(framework.Framework):
         thn_after_click = self.threads.get() - 2
         self.threads.set(thn_after_click)
 
-        print('click', thn_after_click)
-
         self.colors_list = self.colors_list[2:]
-        print(self.colors_list)
 
         for i in range(len(self.main_array)):
             self.main_array[i].pop(0)
@@ -895,8 +877,6 @@ class MainProgram(framework.Framework):
 
         # Insert new array in start of old array
         self.main_array = new_array + self.main_array
-
-        print(self.main_array)
 
         self.threads_colors_array_handler()
         self.canvas_lf.delete('all')
@@ -1063,9 +1043,7 @@ class MainProgram(framework.Framework):
                                                                                     j=j: self.button_right_clicked(i, j))
 
     def button_middle_clicked(self, i, j):
-        print('button')
         self.main_array[i][j] = 0
-
         self.threads_colors_array_handler()
         self.canvas_lf.delete('all')
         self.draw_left_num_bar()
@@ -1127,7 +1105,8 @@ class MainProgram(framework.Framework):
         new_bg = choose_bg[1]
         self.main_bg_color = new_bg
 
-        self.window.destroy()
+        for widgets in self.window.winfo_children():
+            widgets.destroy()
 
         self.main_window()
 
@@ -1243,16 +1222,15 @@ class MainProgram(framework.Framework):
 
     # Ok
     def exit_app(self):
-        # Directory
-        directory_name = "snapshots"
-        current_directory = os.getcwd()
-        # # Path
-        path = os.path.join(current_directory, directory_name)
+        # current directory
+        current_directory = Path.cwd()
+        # path to snapshots folder
+        snap_dir_path = current_directory / "snapshots"
 
         # # # Create directory
-        if os.path.exists(path):
+        if os.path.exists(snap_dir_path):
             try:
-                os.rmdir(path)
+                os.rmdir(snap_dir_path)
             except OSError as error:
                 print(error)
 
@@ -1323,13 +1301,10 @@ def main():
     root = tk.Tk()
     root.title('KnotWizard')
 
-
-
-    data_folder = app_path / 'icons/'
-
+    data_folder = Path('icons')
     logo_file = data_folder / 'new_logo.ico'
-
-    #root.iconbitmap(logo_file)
+    root.iconbitmap(logo_file)
+    
     # root.state('zoomed')
     root.geometry('900x700')
 
@@ -1339,9 +1314,9 @@ def main():
         # On app close we need erase/drop folder which contains snapshots files
         # folder for snapshots == snapshots
         # get path to folder where program sits
-        c_dir = app_path
+
         # create path
-        snapshots_folder = c_dir / 'snapshots'
+        snapshots_folder = Path('snapshots')
         # try to remove folder
         try:
             shutil.rmtree(snapshots_folder)
