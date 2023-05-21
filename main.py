@@ -16,6 +16,7 @@ import shutil
 
 app_path = Path.cwd()
 
+
 class MainProgram(framework.Framework):
     tool_bar_functions = ("add_two_thread_from_left",
                           "drop_two_thread_from_left",
@@ -44,6 +45,8 @@ class MainProgram(framework.Framework):
 
     snapshot_counter = 0
 
+    line_counter = 0
+
     def __init__(self, root):
         # Threads and Rows integers o
         self.threads = tk.IntVar()
@@ -54,9 +57,11 @@ class MainProgram(framework.Framework):
         self.checkCmd_2 = tk.StringVar()
         self.checkCmd_3 = tk.StringVar()
 
-        self.selected_toolbar_func_index = tk.StringVar
 
-        self.menubar = tk.Menu
+        self.selected_toolbar_func_index = tk.StringVar()
+
+        self.menubar = tk.Menu()
+        self.canvas = tk.Canvas()
 
         self.window = tk.Frame
         self.top_frame = tk.Frame
@@ -623,7 +628,7 @@ class MainProgram(framework.Framework):
                 for column in range((self.threads.get() - 1) // 2):
                     self.main_array[row].append(0)
 
-        self.main_array[0][1] = 0
+        # self.main_array[0][1] = 0
 
     # COLORS
     def colors(self):
@@ -1148,6 +1153,7 @@ class MainProgram(framework.Framework):
     def save_image(self):
         save_image_test(self)
 
+
     # Ok
     def save_as_vector(self):
         x1, y1, x2, y2 = self.canvas_lf.bbox('all')
@@ -1304,7 +1310,7 @@ def main():
     data_folder = Path('icons')
     logo_file = data_folder / 'new_logo.ico'
     root.iconbitmap(logo_file)
-    
+
     # root.state('zoomed')
     root.geometry('900x700')
 
