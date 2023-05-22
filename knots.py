@@ -151,10 +151,10 @@ class Knot0:
                                      (self.row_position * 38) + 76,
                                      (20 * self.column_position) + 83,
                                      (self.row_position * 38) + 82,
-                                     fill="#84847D", width=2)
+                                     fill="#C6C6BC", width=2)
 
         self.right_frame.create_line((20 * self.column_position) + 77,
                                      (self.row_position * 38) + 82,
                                      (20 * self.column_position) + 83,
                                      (self.row_position * 38) + 76,
-                                     fill="#84847D", width=2)
+                                     fill="#C6C6BC", width=2)
