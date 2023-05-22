@@ -27,7 +27,7 @@ class MainProgram(framework.Framework):
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 8
-    rows_num = 10
+    rows_num = 30
     colors_list = []
     threads_colors_array = []
 
@@ -52,11 +52,12 @@ class MainProgram(framework.Framework):
         self.threads = tk.IntVar()
         self.rows = tk.IntVar()
 
+        self.max_threads = tk.IntVar()
+
         self.checkCmd = tk.StringVar()
         self.checkCmd_1 = tk.StringVar()
         self.checkCmd_2 = tk.StringVar()
         self.checkCmd_3 = tk.StringVar()
-
 
         self.selected_toolbar_func_index = tk.StringVar()
 
@@ -118,10 +119,15 @@ class MainProgram(framework.Framework):
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
+                # max threads number devoted by monitor width
+                self.max_threads = ((monitor_width - 140) // 20)
+
+                print(self.max_threads)
+
                 thread_spinbox_right = tk.Spinbox(self.top_frame,
                                                   from_=6,
-                                                  to=40,
-                                                  width=2,
+                                                  to=self.max_threads,
+                                                  width=3,
                                                   textvariable=self.threads,
                                                   font=("Arial", 26, 'bold'),
                                                   command=self.add_drop_thread_from_right,
@@ -131,7 +137,13 @@ class MainProgram(framework.Framework):
                 thread_spinbox_right.pack(side='left')
                 # when user put number and hit enter
                 thread_spinbox_right.bind("<Return>", (lambda event: self.add_drop_thread_from_right()))
-                tk.Label(self.top_frame, bg=self.main_bg_color, width=10).pack(side='left')
+
+                # max threads label
+                tk.Label(self.top_frame, bg=self.main_bg_color, foreground='#42423E', font=("Arial", 7),
+                         text='MAX {}'.format(self.max_threads - 1)).pack(side='left', anchor='nw')
+
+                tk.Label(self.top_frame, bg=self.main_bg_color, width=3).pack(side='left', anchor='nw')
+
 
             if i == 2:
                 tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
@@ -150,7 +162,7 @@ class MainProgram(framework.Framework):
 
                 # rows = 20
                 row_widget = tk.Spinbox(self.top_frame,
-                                        from_=2, to=60, width=3,
+                                        from_=30, to=200, width=3,
                                         textvariable=self.rows,
                                         font=("Arial", 26, 'bold'),
                                         foreground=self.main_bg_color,
@@ -611,6 +623,8 @@ class MainProgram(framework.Framework):
 
         self.threads_colors_array_handler()
         self.canvas_lf.delete('all')
+        self.color_picker_pad()
+        self.draw_left_num_bar()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
@@ -745,6 +759,9 @@ class MainProgram(framework.Framework):
         self.draw_center_of_threads()
 
     def add_drop_thread_from_right(self):
+        if self.threads.get() >= self.max_threads:
+            return
+
         thn_after_click = self.threads.get()
 
         if thn_after_click > self.threads_start_num:
@@ -1135,29 +1152,30 @@ class MainProgram(framework.Framework):
         self.build_menu(menu_definitions)
 
     def set_background_color(self):
-        choose_bg = askcolor(title="Thread Color")
+        choose_bg = askcolor(title="Change Background Color")
         new_bg = choose_bg[1]
-        self.main_bg_color = new_bg
 
-        for widgets in self.root.winfo_children():
-            widgets.destroy()
+        if new_bg:
+            self.main_bg_color = new_bg
 
-        self.main_window()
-        self.on_check()
-        self.on_check_1()
-        self.on_check_2()
-        self.on_check_3()
+            for widgets in self.root.winfo_children():
+                widgets.destroy()
 
-        self.create_main_array()
-        self.colors()
-        self.threads_colors_array_handler()
-        self.draw_left_num_bar()
-        self.color_picker_pad()
-        self.draw_threads()
-        self.draw_knots()
-        self.put_buttons()
-        self.draw_center_of_threads()
-        self.create_menu()
+            self.main_window()
+            self.on_check()
+            self.on_check_1()
+            self.on_check_2()
+            self.on_check_3()
+
+            self.colors()
+            self.threads_colors_array_handler()
+            self.draw_left_num_bar()
+            self.color_picker_pad()
+            self.draw_threads()
+            self.draw_knots()
+            self.put_buttons()
+            self.draw_center_of_threads()
+            self.create_menu()
 
     def hide_top_bar(self):
         self.window.forget()
@@ -1277,7 +1295,7 @@ class MainProgram(framework.Framework):
     def test_save(self):
 
         top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
-        self.top.geometry("800x750")
+        self.top.geometry("614x750")
 
         self.myEntryBox_0 = tk.Entry(top, width=34, font=("Arial", 17, 'bold'), foreground='#6E6E68')
         self.myEntryBox_0.grid(row=0, column=0, padx=32, pady=2, sticky='we', columnspan=8)
@@ -1318,13 +1336,14 @@ class MainProgram(framework.Framework):
         self.myEntryBox_12 = tk.Entry(top, width=34, font=("Arial", 17, 'bold'), foreground='#6E6E68')
         self.myEntryBox_12.grid(row=12, column=0, padx=32, pady=2, sticky='we', columnspan=9)
 
+
         self.mySubmitButton = tk.Button(top, text='Add Info and Save', command=self.parent_func, foreground='#2C2C29',
-                                        font=("Arial", 10, 'bold'))
-        self.mySubmitButton.grid(row=13, column=1, sticky='w', pady=40, padx=60, ipady=20)
+                                        font=("Arial", 10))
+        self.mySubmitButton.grid(row=13, column=1, sticky='w', pady=40, padx=60, ipady=10)
 
         self.mySubmitButton1 = tk.Button(top, text='Pass and Save', command=self.parent_func, foreground='#2C2C29',
-                                         font=("Arial", 10, 'bold'))
-        self.mySubmitButton1.grid(row=13, column=2, sticky='w', pady=40, padx=60, ipady=20)
+                                         font=("Arial", 10))
+        self.mySubmitButton1.grid(row=13, column=2, sticky='e', pady=40, padx=60, ipady=10)
 
     def parent_func(self):
         self.save_image()
