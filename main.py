@@ -57,7 +57,6 @@ class MainProgram(framework.Framework):
         self.checkCmd_2 = tk.StringVar()
         self.checkCmd_3 = tk.StringVar()
 
-
         self.selected_toolbar_func_index = tk.StringVar()
 
         self.menubar = tk.Menu()
@@ -106,15 +105,16 @@ class MainProgram(framework.Framework):
         icons = ('2plus', '2drop', 'add_rows', 'drop_rows', 'snapshot', 'drop_snapshot')
         for i, icon in enumerate(icons):
             if i == 0:
-
                 tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 1:
                 tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
@@ -135,7 +135,8 @@ class MainProgram(framework.Framework):
 
             if i == 2:
                 tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
@@ -219,7 +220,7 @@ class MainProgram(framework.Framework):
         self.snp_frame.pack(side='left')
         self.top_frame.pack(side="left", anchor='n')
 
-        self.window.pack(anchor='w', fill=tk.X,)
+        self.window.pack(anchor='w', fill=tk.X, )
 
         # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
         self.left_frame = tk.Frame(self.root,
@@ -241,7 +242,7 @@ class MainProgram(framework.Framework):
         self.canvas_lf.config(yscrollcommand=scrollbar.set)
         self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
 
-        self.left_frame.pack(fill=tk.X, padx=5, pady=5,)
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5, )
 
     def on_check(self):
 
@@ -300,7 +301,6 @@ class MainProgram(framework.Framework):
 
         # Path
         path_to_file = snap_dir_path / 'snapshot_1.txt'
-
 
         with open(path_to_file, 'r') as fp:
             data = fp.read()
@@ -543,7 +543,7 @@ class MainProgram(framework.Framework):
         num_bar_height = self.rows.get() * 100
 
         self.canvas = tk.Canvas(self.canvas_lf, width=50, height=num_bar_height, bg=self.main_bg_color)
-        self.canvas_lf.create_window(2, 2, anchor='nw',  window=self.canvas)
+        self.canvas_lf.create_window(2, 2, anchor='nw', window=self.canvas)
 
         checkbutton = tk.Checkbutton(self.canvas,
                                      onvalue=True,
@@ -593,7 +593,7 @@ class MainProgram(framework.Framework):
             line = self.canvas_lf.create_line((20 * i) + 70, 4, (20 * i) + 70, 20, fill=self.colors_list[i], width=10)
             self.canvas_lf.tag_bind(line, '<Button-1>', lambda event, i=i: self.color_picker(i))
 
-    def color_picker(self,  i):
+    def color_picker(self, i):
 
         new_colors = askcolor(title="Thread Color")
         ccc = new_colors[1]
@@ -667,16 +667,18 @@ class MainProgram(framework.Framework):
 
                         # Change all lower threads colors
                         for k in range(row + 1, len(self.main_array)):
-
                             self.threads_colors_array[k][column * 2] = self.threads_colors_array[row][(column * 2) + 1]
-                            self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][(column * 2)]
+                            self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][
+                                (column * 2)]
 
                 if row % 2 != 0:
                     if self.main_array[row][column] == 1 or self.main_array[row][column] == 3:
 
                         for k in range(row + 1, len(self.main_array)):
-                            self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][(column * 2) + 2]
-                            self.threads_colors_array[k][(column * 2) + 2] = self.threads_colors_array[row][(column * 2) + 1]
+                            self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][
+                                (column * 2) + 2]
+                            self.threads_colors_array[k][(column * 2) + 2] = self.threads_colors_array[row][
+                                (column * 2) + 1]
 
     # TOP BAR BUTTONS FUNCTIONS
     def selected_tool_bar_item(self, i):
@@ -1011,41 +1013,41 @@ class MainProgram(framework.Framework):
             if i % 2 == 0:
                 for j in range(self.threads.get() // 2):
                     button_rect[i][j] = self.canvas_lf.create_rectangle(((40 * j) + 68,
-                                                                        (38 * i) + 60,
-                                                                        (40 * j) + 92,
-                                                                        (38 * i) + 98),
+                                                                         (38 * i) + 60,
+                                                                         (40 * j) + 92,
+                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="")
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-1>', lambda event, i=i,
-                                                                                      j=j: self.button_left_clicked(i, j))
+                                                                                    j=j: self.button_left_clicked(i, j))
 
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-2>', lambda event, i=i,
-                                                                                      j=j: self.button_middle_clicked(i, j))
-
+                                                                                    j=j: self.button_middle_clicked(i,
+                                                                                                                    j))
 
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-3>', lambda event, i=i,
-                                                                                    j=j: self.button_right_clicked(i, j))
-
-
+                                                                                    j=j: self.button_right_clicked(i,
+                                                                                                                   j))
 
         for i in range(self.rows.get()):
             if i % 2 != 0:
                 for j in range((self.threads.get() - 1) // 2):
                     button_rect[i][j] = self.canvas_lf.create_rectangle(((40 * j) + 88,
-                                                                        (38 * i) + 60,
-                                                                        (40 * j) + 112,
-                                                                        (38 * i) + 98),
+                                                                         (38 * i) + 60,
+                                                                         (40 * j) + 112,
+                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="")
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-1>', lambda event, i=i,
-                                                                                       j=j: self.button_left_clicked(i, j))
+                                                                                    j=j: self.button_left_clicked(i, j))
 
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-2>', lambda event, i=i,
-                                                                                      j=j: self.button_middle_clicked(i, j))
-
+                                                                                    j=j: self.button_middle_clicked(i,
+                                                                                                                    j))
 
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-3>', lambda event, i=i,
-                                                                                    j=j: self.button_right_clicked(i, j))
+                                                                                    j=j: self.button_right_clicked(i,
+                                                                                                                   j))
 
     def button_middle_clicked(self, i, j):
         self.main_array[i][j] = 0
@@ -1095,8 +1097,7 @@ class MainProgram(framework.Framework):
         self.menubar = tk.Menu(self.root)
         menu_definitions = (
             'File- &New Pattern/ /self.new_pattern, Open Pattern/ /self.open_pattern, Save Pattern/ /self.save_pattern,\
-            Save As Picture/ /self.test_save,Save For Printer/ /self.save_as_vector, sep, Exit/ /self.exit_app, sep,\
-             Exit/ /self.exit_app',
+            sep, Save As Picture/ /self.test_save,Save For Printer/ /self.save_as_vector, sep, Exit/ /self.exit_app',
 
             'View- &Hide Top/ /self.hide_top_bar, Show Top/ /self.show_top_bar,\
              Set Background/ /self.set_background_color ',
@@ -1143,7 +1144,6 @@ class MainProgram(framework.Framework):
         self.on_check_2()
         self.on_check_3()
 
-        self.create_main_array()
         self.colors()
         self.threads_colors_array_handler()
         self.draw_left_num_bar()
@@ -1156,7 +1156,6 @@ class MainProgram(framework.Framework):
 
     def save_image(self):
         save_image_test(self)
-
 
     # Ok
     def save_as_vector(self):
@@ -1332,6 +1331,7 @@ def main():
             shutil.rmtree(snapshots_folder)
         except OSError as e:
             pass
+
     # register command at exit
     atexit.register(exit_handler)
 
