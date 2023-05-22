@@ -26,7 +26,7 @@ class MainProgram(framework.Framework):
                           "snapshot_minus")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 9
+    threads_start_num = 24
     rows_num = 30
     colors_list = []
     threads_colors_array = []
@@ -1163,8 +1163,6 @@ class MainProgram(framework.Framework):
             self.on_check_1()
             self.on_check_2()
             self.on_check_3()
-
-            self.colors()
             self.threads_colors_array_handler()
             self.draw_left_num_bar()
             self.color_picker_pad()
@@ -1186,7 +1184,6 @@ class MainProgram(framework.Framework):
         self.on_check_1()
         self.on_check_2()
         self.on_check_3()
-
         self.threads_colors_array_handler()
         self.draw_left_num_bar()
         self.color_picker_pad()
