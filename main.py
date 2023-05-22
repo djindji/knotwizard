@@ -122,7 +122,7 @@ class MainProgram(framework.Framework):
                 # max threads number devoted by monitor width
                 self.max_threads = ((monitor_width - 140) // 20)
 
-                print(self.max_threads)
+
 
                 thread_spinbox_right = tk.Spinbox(self.top_frame,
                                                   from_=6,
@@ -888,11 +888,6 @@ class MainProgram(framework.Framework):
                 if self.rows_num % 2 != 0:
                     self.main_array = self.main_array + [add_array[1]]
 
-            print(add_array)
-            print(self.main_array)
-
-
-
         # For rows dropping
         if rows_after_click < self.rows_num:
             drop_rows_num = self.rows_num - rows_after_click
@@ -1192,7 +1187,6 @@ class MainProgram(framework.Framework):
         self.on_check_2()
         self.on_check_3()
 
-        self.colors()
         self.threads_colors_array_handler()
         self.draw_left_num_bar()
         self.color_picker_pad()
@@ -1365,7 +1359,7 @@ def main():
     root.iconbitmap(logo_file)
 
     # root.state('zoomed')
-    root.geometry('900x700')
+    root.geometry('800x700')
 
     MainProgram(root)
 
