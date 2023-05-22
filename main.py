@@ -301,7 +301,6 @@ class MainProgram(framework.Framework):
         # Path
         path_to_file = snap_dir_path / 'snapshot_1.txt'
 
-
         with open(path_to_file, 'r') as fp:
             data = fp.read()
             details = ast.literal_eval(data)
@@ -312,7 +311,11 @@ class MainProgram(framework.Framework):
             self.threads_start_num = details['threads_start_num']
             self.left_add_drop_sit = details['left_add_drop_sit']
 
+            self.threads.set(details['threads_start_num'])
+            self.rows.set(details['rows_num'])
+
             self.canvas_lf.delete('all')
+
             self.color_picker_pad()
             self.draw_left_num_bar()
             self.draw_threads()
@@ -384,6 +387,9 @@ class MainProgram(framework.Framework):
             self.rows_num = details['rows_num']
             self.threads_start_num = details['threads_start_num']
             self.left_add_drop_sit = details['left_add_drop_sit']
+
+            self.threads.set(details['threads_start_num'])
+            self.rows.set(details['rows_num'])
 
             self.canvas_lf.delete('all')
             self.color_picker_pad()
@@ -457,6 +463,8 @@ class MainProgram(framework.Framework):
             self.rows_num = details['rows_num']
             self.threads_start_num = details['threads_start_num']
             self.left_add_drop_sit = details['left_add_drop_sit']
+            self.threads.set(details['threads_start_num'])
+            self.rows.set(details['rows_num'])
 
             self.canvas_lf.delete('all')
             self.color_picker_pad()
@@ -530,6 +538,8 @@ class MainProgram(framework.Framework):
             self.rows_num = details['rows_num']
             self.threads_start_num = details['threads_start_num']
             self.left_add_drop_sit = details['left_add_drop_sit']
+            self.threads.set(details['threads_start_num'])
+            self.rows.set(details['rows_num'])
 
             self.canvas_lf.delete('all')
             self.color_picker_pad()
