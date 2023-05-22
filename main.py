@@ -26,7 +26,7 @@ class MainProgram(framework.Framework):
                           "snapshot_minus")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 8
+    threads_start_num = 9
     rows_num = 30
     colors_list = []
     threads_colors_array = []
@@ -619,25 +619,27 @@ class MainProgram(framework.Framework):
 
         new_colors = askcolor(title="Thread Color")
         ccc = new_colors[1]
-        self.colors_list[i] = ccc
 
-        self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.color_picker_pad()
-        self.draw_left_num_bar()
-        self.draw_threads()
-        self.draw_knots()
-        self.put_buttons()
+        if ccc:
+            self.colors_list[i] = ccc
+
+            self.threads_colors_array_handler()
+            self.canvas_lf.delete('all')
+            self.color_picker_pad()
+            self.draw_left_num_bar()
+            self.draw_threads()
+            self.draw_knots()
+            self.put_buttons()
 
     # DRAW THREADS CENTER
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 60, 38, (20 * center) + 60, 42], fill='grey', width=2)
+            self.canvas_lf.create_line([(20 * center) + 60, 38, (20 * center) + 60, 48], fill='grey', width=2)
 
         if self.threads.get() % 2 != 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 42], fill='grey', width=2)
+            self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 48], fill='grey', width=2)
 
     # MAIN KNOTS ARRAY
     def create_main_array(self):
