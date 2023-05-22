@@ -26,7 +26,7 @@ class MainProgram(framework.Framework):
                           "snapshot_minus")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 8
+    threads_start_num = 20
     rows_num = 30
     colors_list = []
     threads_colors_array = []
@@ -1110,10 +1110,14 @@ class MainProgram(framework.Framework):
         new_bg = choose_bg[1]
         self.main_bg_color = new_bg
 
-        for widgets in self.window.winfo_children():
+        for widgets in self.root.winfo_children():
             widgets.destroy()
 
         self.main_window()
+        self.on_check()
+        self.on_check_1()
+        self.on_check_2()
+        self.on_check_3()
 
         self.create_main_array()
         self.colors()
