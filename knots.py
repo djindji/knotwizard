@@ -1,4 +1,4 @@
-
+import  tkinter as tk
 class Knot1:
 
     def __init__(self, color, color_1, row_position, column_position, frame, bg_color):
@@ -16,25 +16,25 @@ class Knot1:
                                      (38 * self.row_position) + 90,
                                      (20 * self.column_position) + 90,
                                      (38 * self.row_position) + 98,
-                                     fill=self.color, width=4, tags='line')
+                                     fill=self.color, width=2, joinstyle=tk.ROUND, smooth=True)
 
         self.right_frame.create_line((20 * self.column_position) + 70,
                                      (38 * self.row_position) + 90,
                                      (20 * self.column_position) + 70,
                                      (38 * self.row_position) + 98,
-                                     fill=self.color_1, width=4, tags='line')
+                                     fill=self.color_1, width=2, joinstyle=tk.ROUND, smooth=True)
 
         self.right_frame.create_oval((20 * self.column_position) + 65,
                                      (self.row_position * 38) + 64,
                                      (20 * self.column_position) + 95,
                                      (self.row_position * 38) + 94,
-                                     fill=self.bg_color, width=2, outline=self.color)
+                                     fill=self.bg_color, width=4, outline=self.color)
 
         self.right_frame.create_line((20 * self.column_position) + 69,
                                      (self.row_position * 38) + 69,
                                      (20 * self.column_position) + 90,
                                      (self.row_position * 38) + 90,
-                                     fill=self.color, width=3)
+                                     fill=self.color, width=4, joinstyle=tk.ROUND, smooth=True)
 
 
 class Knot2:
@@ -53,19 +53,19 @@ class Knot2:
                                      (self.row_position * 38) + 64,
                                      (20 * self.column_position) + 95,
                                      (self.row_position * 38) + 94,
-                                     fill=self.bg_color, width=2, outline=self.color)
+                                     fill=self.bg_color, width=4, outline=self.color)
 
-        self.right_frame.create_line((20 * self.column_position) + 68,
-                                     (self.row_position * 38) + 60,
+        self.right_frame.create_line((20 * self.column_position) + 72,
+                                     (self.row_position * 38) + 66,
                                      (20 * self.column_position) + 82,
                                      (self.row_position * 38) + 79,
-                                     fill=self.color, width=3)
+                                     fill=self.color, width=5, joinstyle=tk.ROUND, smooth=True)
 
         self.right_frame.create_line((20 * self.column_position) + 83,
                                      (self.row_position * 38) + 79,
-                                     (20 * self.column_position) + 68,
-                                     (self.row_position * 38) + 98,
-                                     fill=self.color, width=3)
+                                     (20 * self.column_position) + 72,
+                                     (self.row_position * 38) + 92,
+                                     fill=self.color, width=5, joinstyle=tk.ROUND, smooth=True)
 
 
 class Knot3:
@@ -85,25 +85,25 @@ class Knot3:
                                      (38 * self.row_position) + 90,
                                      (20 * self.column_position) + 90,
                                      (38 * self.row_position) + 98,
-                                     fill=self.color_1, width=4, tags='line')
+                                     fill=self.color_1, width=2, joinstyle=tk.ROUND, smooth=True)
 
         self.right_frame.create_line((20 * self.column_position) + 70,
                                      (38 * self.row_position) + 90,
                                      (20 * self.column_position) + 70,
                                      (38 * self.row_position) + 98,
-                                     fill=self.color, width=4, tags='line')
+                                     fill=self.color, width=2, joinstyle=tk.ROUND, smooth=True)
 
         self.right_frame.create_oval((20 * self.column_position) + 65,
                                      (self.row_position * 38) + 64,
                                      (20 * self.column_position) + 95,
                                      (self.row_position * 38) + 94,
-                                     fill=self.bg_color, width=2, outline=self.color)
+                                     fill=self.bg_color, width=4, outline=self.color)
 
         self.right_frame.create_line((20 * self.column_position) + 90,
                                      (self.row_position * 38) + 69,
                                      (20 * self.column_position) + 69,
                                      (self.row_position * 38) + 90,
-                                     fill=self.color, width=3)
+                                     fill=self.color, width=5, joinstyle=tk.ROUND, smooth=True)
 
 
 class Knot4:
@@ -122,19 +122,21 @@ class Knot4:
                                      (self.row_position * 38) + 64,
                                      (20 * self.column_position) + 95,
                                      (self.row_position * 38) + 94,
-                                     fill=self.bg_color, width=2, outline=self.color)
+                                     fill=self.bg_color, width=4, outline=self.color)
 
-        self.right_frame.create_line((20 * self.column_position) + 91,
-                                     (self.row_position * 38) + 60,
-                                     (20 * self.column_position) + 79,
-                                     (self.row_position * 38) + 79,
-                                     fill=self.color, width=3)
+        self.right_frame.create_line((20 * self.column_position) + 88,
+                                     (self.row_position * 38) + 69,
+                                     (20 * self.column_position) + 76,
+                                     (self.row_position * 38) + 81,
+                                     fill=self.color, width=5, joinstyle=tk.ROUND, smooth=True)
 
-        self.right_frame.create_line((20 * self.column_position) + 79,
-                                     (self.row_position * 38) + 79,
-                                     (20 * self.column_position) + 91,
-                                     (self.row_position * 38) + 98,
-                                     fill=self.color, width=3)
+        self.right_frame.create_line((20 * self.column_position) + 77,
+                                     (self.row_position * 38) + 78,
+                                     (20 * self.column_position) + 88,
+                                     (self.row_position * 38) + 92,
+                                     fill=self.color, width=5, joinstyle=tk.ROUND, smooth=True)
+
+
 
 
 class Knot0:
@@ -151,10 +153,10 @@ class Knot0:
                                      (self.row_position * 38) + 76,
                                      (20 * self.column_position) + 83,
                                      (self.row_position * 38) + 82,
-                                     fill="#C6C6BC", width=2)
+                                     fill="#C6C6BC", width=2, capstyle=tk.PROJECTING, smooth=True)
 
         self.right_frame.create_line((20 * self.column_position) + 77,
                                      (self.row_position * 38) + 82,
                                      (20 * self.column_position) + 83,
                                      (self.row_position * 38) + 76,
-                                     fill="#C6C6BC", width=2)
+                                     fill="#C6C6BC", width=2, capstyle=tk.PROJECTING, smooth=True)

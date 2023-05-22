@@ -27,7 +27,7 @@ class MainProgram(framework.Framework):
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 24
-    rows_num = 30
+    rows_num = 10
     colors_list = []
     threads_colors_array = []
 
@@ -69,6 +69,7 @@ class MainProgram(framework.Framework):
         self.snp_frame = tk.Frame
         self.left_frame = tk.Frame
         self.canvas_lf = tk.Canvas
+        self.top = tk.Toplevel
         self.root = root
 
         self.main_window()
@@ -654,6 +655,8 @@ class MainProgram(framework.Framework):
                 for column in range((self.threads.get() - 1) // 2):
                     self.main_array[row].append(0)
 
+
+
     # COLORS
     def colors(self):
         if self.threads_start_num % 2 == 0:
@@ -967,7 +970,7 @@ class MainProgram(framework.Framework):
                                            (38 * i) + 60,
                                            (20 * j) + 70,
                                            (38 * i) + 98,
-                                           fill=color, width=4, tags='line')
+                                           fill=color, width=2)
 
     def draw_knots(self):
         for i in range(len(self.main_array)):
@@ -1195,7 +1198,6 @@ class MainProgram(framework.Framework):
 
     def save_image(self):
         save_image_test(self)
-
 
     # Ok
     def save_as_vector(self):
