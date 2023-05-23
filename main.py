@@ -10,7 +10,6 @@ from tkinter.filedialog import asksaveasfile, askopenfilename
 import atexit
 import framework
 from PIL import Image, ImageDraw, ImageFont
-import os
 import ast
 import shutil
 
@@ -1232,10 +1231,10 @@ class MainProgram(framework.Framework):
         file = asksaveasfile(mode='w', initialfile='my_bracelet.eps', defaultextension=".eps",
                              filetypes=(("EPS file", "*.eps"), ("All Files", "*.*")))
 
-        # save image to the input file name
+        # save image if user chose to save
         if file:
-            abs_path = os.path.abspath(file.name)
-            img.save(abs_path)
+            file_path = Path(file.name)
+            img.save(file_path)
 
     def save_pattern(self):
         my_dict = {'colors': self.colors_list,
