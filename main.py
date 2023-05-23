@@ -1261,22 +1261,24 @@ class MainProgram(framework.Framework):
             return
 
         if filename:
-            abs_path = os.path.abspath(filename)
-            with open(abs_path, 'r') as fp:
-                data = fp.read()
-                details = ast.literal_eval(data)
-                self.colors_list = details['colors']
-                self.main_array = details['knots']
-                self.threads_colors_array = details['threads']
-                self.rows_num = details['rows_num']
-                self.threads_start_num = details['threads_start_num']
+            file_path = Path(filename)
+            # read data from file
+            data = file_path.read_text()
 
-                self.canvas_lf.delete('all')
-                self.color_picker_pad()
-                self.draw_left_num_bar()
-                self.draw_threads()
-                self.draw_knots()
-                self.put_buttons()
+            # update values
+            details = ast.literal_eval(data)
+            self.colors_list = details['colors']
+            self.main_array = details['knots']
+            self.threads_colors_array = details['threads']
+            self.rows_num = details['rows_num']
+            self.threads_start_num = details['threads_start_num']
+            # redraw canvas
+            self.canvas_lf.delete('all')
+            self.color_picker_pad()
+            self.draw_left_num_bar()
+            self.draw_threads()
+            self.draw_knots()
+            self.put_buttons()
 
     def new_pattern(self):
 
