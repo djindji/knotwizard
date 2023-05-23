@@ -1242,16 +1242,13 @@ class MainProgram(framework.Framework):
                    'knots': self.main_array,
                    'threads': self.threads_colors_array,
                    'rows_num': self.rows_num,
-                   'threads_start_num': self.threads_start_num
-                   }
+                   'threads_start_num': self.threads_start_num}
 
         filename = asksaveasfile(initialfile='my_bracelet.knw', defaultextension=".knw",
-                                 filetypes=[("All Files", "*.*"), ("Text Documents", "*.txt")])
+                                 filetypes=[("All Files", "*.*"), ("Patterns", "*.knw")])
         if filename:
-            abs_path = os.path.abspath(filename.name)
-            file = open(abs_path, 'w')
-            file.write(str(my_dict))
-            file.close()
+            file_path = Path(filename.name)
+            file_path.write_text(str(my_dict))
 
     def open_pattern(self):
 
