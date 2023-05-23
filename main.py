@@ -1016,7 +1016,7 @@ class MainProgram(framework.Framework):
                                            (38 * i) + 60,
                                            (20 * j) + 70,
                                            (38 * i) + 98,
-                                           fill=color, width=2)
+                                           fill=color, width=2, tags='cvch')
 
     def draw_knots(self):
         for i in range(len(self.main_array)):
@@ -1108,7 +1108,7 @@ class MainProgram(framework.Framework):
                                                                         (40 * j) + 92,
                                                                         (38 * i) + 98),
                                                                         fill='',
-                                                                        outline="")
+                                                                        outline="", tags='cvch')
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-1>',
                                         lambda event, i=i, j=j: self.button_left_clicked(i, j))
 
@@ -1126,7 +1126,7 @@ class MainProgram(framework.Framework):
                                                                         (40 * j) + 112,
                                                                         (38 * i) + 98),
                                                                         fill='',
-                                                                        outline="")
+                                                                        outline="", tags='cvch')
                     self.canvas_lf.tag_bind(button_rect[i][j], '<Button-1>',
                                         lambda event, i=i, j=j: self.button_left_clicked(i, j))
 
@@ -1137,47 +1137,47 @@ class MainProgram(framework.Framework):
                                         lambda event, i=i, j=j: self.button_right_clicked(i, j))
 
     def button_middle_clicked(self, i, j):
-        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
+        self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
         self.main_array[i][j] = 0
         self.threads_colors_array_handler()
 
         self.threads_colors_array_handler()
-        self.draw_left_num_bar()
-        self.color_picker_pad()
+        # self.draw_left_num_bar()
+        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
+        # self.draw_center_of_threads()
 
     def button_left_clicked(self, i, j):
-        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
+        self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
         if self.main_array[i][j] >= 2 or self.main_array[i][j] == 0:
             self.main_array[i][j] = 1
         else:
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        self.draw_left_num_bar()
-        self.color_picker_pad()
+        # self.draw_left_num_bar()
+        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
+        # self.draw_center_of_threads()
 
     def button_right_clicked(self, i, j):
-        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
+        self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
         if self.main_array[i][j] <= 2 or self.main_array[i][j] >= 4:
             self.main_array[i][j] = 3
         else:
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        self.draw_left_num_bar()
-        self.color_picker_pad()
+        # self.draw_left_num_bar()
+        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
+        # self.draw_center_of_threads()
 
     # TOP MENU
     def create_menu(self):
@@ -1285,18 +1285,31 @@ class MainProgram(framework.Framework):
 
             # update values
             details = ast.literal_eval(data)
+            # rewrite variables
+            self.threads.set(details['threads_start_num'])
+            self.rows.set(details['rows_num'])
             self.colors_list = details['colors']
             self.main_array = details['knots']
             self.threads_colors_array = details['threads']
             self.rows_num = details['rows_num']
             self.threads_start_num = details['threads_start_num']
-            # redraw canvas
-            self.canvas_lf.delete('all')
-            self.color_picker_pad()
+
+            for widgets in self.root.winfo_children():
+                widgets.destroy()
+
+            self.main_window()
+            self.on_check()
+            self.on_check_1()
+            self.on_check_2()
+            self.on_check_3()
+            self.threads_colors_array_handler()
             self.draw_left_num_bar()
+            self.color_picker_pad()
             self.draw_threads()
             self.draw_knots()
             self.put_buttons()
+            self.draw_center_of_threads()
+            self.create_menu()
 
     def new_pattern(self):
 
