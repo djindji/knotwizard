@@ -22,17 +22,13 @@ class MainProgram(framework.Framework):
                           "drop_two_thread_from_left",
                           "add_rows_top",
                           "drop_rows_top",
-                          "snapshot_plus",
-                          "snapshot_minus")
+                          "two_colors_pattern")
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 24
-    rows_num = 10
+    rows_num = 30
     colors_list = []
     threads_colors_array = []
-
-    # Create variable to hold add/ drop situation. if we add 'not even' number to threads from LEFT
-    left_add_drop_sit = 0
 
     # Rows number column show/hide
     hidden = True
@@ -105,7 +101,7 @@ class MainProgram(framework.Framework):
         self.top_frame = tk.Frame(self.window, bg=self.main_bg_color)
 
         # Create icons tuple
-        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', 'snapshot', 'drop_snapshot')
+        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors')
         for i, icon in enumerate(icons):
             if i == 0:
 
@@ -229,7 +225,18 @@ class MainProgram(framework.Framework):
                        foreground="black",
                        command=lambda: self.on_check_3()).grid(row=0, column=7, sticky='n')
 
+
+
         self.snp_frame.pack(side='left')
+
+        if i == 4:
+            tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
+            tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                 command=lambda i=i: self.selected_tool_bar_item(i))
+            tool_bar.image = tool_bar_icon
+            tool_bar.pack(side='top', padx=60)
+
+
         self.top_frame.pack(side="left", anchor='n')
 
         self.window.pack(anchor='w', fill=tk.X,)
@@ -268,7 +275,6 @@ class MainProgram(framework.Framework):
                       relief='flat').grid(row=0, column=1)
 
         if self.checkCmd.get() == "1":
-
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='1', bg='#bba5bc',
@@ -279,61 +285,53 @@ class MainProgram(framework.Framework):
                       command=lambda: self.run_snapshot()).grid(row=0, column=1)
 
             # Dictionary
-
             my_dict = {'colors': self.colors_list,
                        'knots': self.main_array,
                        'threads': self.threads_colors_array,
                        'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num,
-                       'left_add_drop_sit': self.left_add_drop_sit}
+                       'threads_start_num': self.threads_start_num}
 
             # current directory
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
+            print(snap_dir_path)
 
-            # # # Create directory
-            if not os.path.exists(snap_dir_path):
-                try:
-                    os.mkdir(snap_dir_path)
-                except OSError as error:
-                    print(error)
+            # # # Create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_1.txt"
-            file = open(path_to_file, 'w')
-            file.write(str(my_dict))
-            file.close()
+            # write to file
+            path_to_file.write_text(str(my_dict))
 
     def run_snapshot(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
-        snap_dir_path = current_directory / "snapshots"
+        snap_file_path = current_directory / "snapshots" / 'snapshot_1.txt'
+        # read file
+        text = snap_file_path.read_text()
+        # put data from file to list
+        details = ast.literal_eval(text)
 
-        # Path
-        path_to_file = snap_dir_path / 'snapshot_1.txt'
+        # rewrite variables
+        self.threads.set(details['threads_start_num'])
+        self.rows.set(details['rows_num'])
+        self.colors_list = details['colors']
+        self.main_array = details['knots']
+        self.threads_colors_array = details['threads']
+        self.rows_num = details['rows_num']
+        self.threads_start_num = details['threads_start_num']
 
-        with open(path_to_file, 'r') as fp:
-            data = fp.read()
-            details = ast.literal_eval(data)
-            self.colors_list = details['colors']
-            self.main_array = details['knots']
-            self.threads_colors_array = details['threads']
-            self.rows_num = details['rows_num']
-            self.threads_start_num = details['threads_start_num']
-            self.left_add_drop_sit = details['left_add_drop_sit']
-
-            self.threads.set(details['threads_start_num'])
-            self.rows.set(details['rows_num'])
-
-            self.canvas_lf.delete('all')
-
-            self.color_picker_pad()
-            self.draw_left_num_bar()
-            self.draw_threads()
-            self.draw_knots()
-            self.put_buttons()
+        # draw canvas
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
 
     def on_check_1(self):
 
@@ -357,59 +355,54 @@ class MainProgram(framework.Framework):
                       relief='raised',
                       command=lambda: self.run_snapshot_1()).grid(row=0, column=4)
 
+            # Dictionary
             my_dict = {'colors': self.colors_list,
                        'knots': self.main_array,
                        'threads': self.threads_colors_array,
                        'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num,
-                       'left_add_drop_sit': self.left_add_drop_sit}
+                       'threads_start_num': self.threads_start_num}
 
             # current directory
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
+            print(snap_dir_path)
 
-            # # # Create directory
-            if not os.path.exists(snap_dir_path):
-                try:
-                    os.mkdir(snap_dir_path)
-                except OSError as error:
-                    print(error)
+            # # # Create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_2.txt"
-            file = open(path_to_file, 'w')
-            file.write(str(my_dict))
-            file.close()
+            # write to file
+            path_to_file.write_text(str(my_dict))
 
     def run_snapshot_1(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
-        snap_dir_path = current_directory / "snapshots"
+        snap_file_path = current_directory / "snapshots" / 'snapshot_2.txt'
+        # read file
+        text = snap_file_path.read_text()
+        # put data from file to list
+        details = ast.literal_eval(text)
 
-        # Path
-        path_to_file = snap_dir_path / 'snapshot_2.txt'
+        # rewrite variables
+        self.threads.set(details['threads_start_num'])
+        self.rows.set(details['rows_num'])
+        self.colors_list = details['colors']
+        self.main_array = details['knots']
+        self.threads_colors_array = details['threads']
+        self.rows_num = details['rows_num']
+        self.threads_start_num = details['threads_start_num']
 
-        with open(path_to_file, 'r') as fp:
-            data = fp.read()
-            details = ast.literal_eval(data)
-            self.colors_list = details['colors']
-            self.main_array = details['knots']
-            self.threads_colors_array = details['threads']
-            self.rows_num = details['rows_num']
-            self.threads_start_num = details['threads_start_num']
-            self.left_add_drop_sit = details['left_add_drop_sit']
-
-            self.threads.set(details['threads_start_num'])
-            self.rows.set(details['rows_num'])
-
-            self.canvas_lf.delete('all')
-            self.color_picker_pad()
-            self.draw_left_num_bar()
-            self.draw_threads()
-            self.draw_knots()
-            self.put_buttons()
+        # draw canvas
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
 
     def on_check_2(self):
 
@@ -433,58 +426,54 @@ class MainProgram(framework.Framework):
                       relief='raised',
                       command=lambda: self.run_snapshot_2()).grid(row=0, column=6)
 
+            # Dictionary
             my_dict = {'colors': self.colors_list,
                        'knots': self.main_array,
                        'threads': self.threads_colors_array,
                        'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num,
-                       'left_add_drop_sit': self.left_add_drop_sit}
+                       'threads_start_num': self.threads_start_num}
 
             # current directory
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
+            print(snap_dir_path)
 
-            # # # Create directory
-            if not os.path.exists(snap_dir_path):
-                try:
-                    os.mkdir(snap_dir_path)
-                except OSError as error:
-                    print(error)
+            # # # Create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_3.txt"
-            file = open(path_to_file, 'w')
-            file.write(str(my_dict))
-            file.close()
+            # write to file
+            path_to_file.write_text(str(my_dict))
 
     def run_snapshot_2(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
-        snap_dir_path = current_directory / "snapshots"
+        snap_file_path = current_directory / "snapshots" / 'snapshot_3.txt'
+        # read file
+        text = snap_file_path.read_text()
+        # put data from file to list
+        details = ast.literal_eval(text)
 
-        # Path
-        path_to_file = snap_dir_path / 'snapshot_3.txt'
+        # rewrite variables
+        self.threads.set(details['threads_start_num'])
+        self.rows.set(details['rows_num'])
+        self.colors_list = details['colors']
+        self.main_array = details['knots']
+        self.threads_colors_array = details['threads']
+        self.rows_num = details['rows_num']
+        self.threads_start_num = details['threads_start_num']
 
-        with open(path_to_file, 'r') as fp:
-            data = fp.read()
-            details = ast.literal_eval(data)
-            self.colors_list = details['colors']
-            self.main_array = details['knots']
-            self.threads_colors_array = details['threads']
-            self.rows_num = details['rows_num']
-            self.threads_start_num = details['threads_start_num']
-            self.left_add_drop_sit = details['left_add_drop_sit']
-            self.threads.set(details['threads_start_num'])
-            self.rows.set(details['rows_num'])
-
-            self.canvas_lf.delete('all')
-            self.color_picker_pad()
-            self.draw_left_num_bar()
-            self.draw_threads()
-            self.draw_knots()
-            self.put_buttons()
+        # draw canvas
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
 
     def on_check_3(self):
 
@@ -508,58 +497,54 @@ class MainProgram(framework.Framework):
                       relief='raised',
                       command=lambda: self.run_snapshot_3()).grid(row=0, column=8)
 
+            # Dictionary
             my_dict = {'colors': self.colors_list,
                        'knots': self.main_array,
                        'threads': self.threads_colors_array,
                        'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num,
-                       'left_add_drop_sit': self.left_add_drop_sit}
+                       'threads_start_num': self.threads_start_num}
 
             # current directory
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
+            print(snap_dir_path)
 
-            # # # Create directory
-            if not os.path.exists(snap_dir_path):
-                try:
-                    os.mkdir(snap_dir_path)
-                except OSError as error:
-                    print(error)
+            # # # Create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_4.txt"
-            file = open(path_to_file, 'w')
-            file.write(str(my_dict))
-            file.close()
+            # write to file
+            path_to_file.write_text(str(my_dict))
 
     def run_snapshot_3(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
-        snap_dir_path = current_directory / "snapshots"
+        snap_file_path = current_directory / "snapshots" / 'snapshot_4.txt'
+        # read file
+        text = snap_file_path.read_text()
+        # put data from file to list
+        details = ast.literal_eval(text)
 
-        # Path
-        path_to_file = snap_dir_path / 'snapshot_4.txt'
+        # rewrite variables
+        self.threads.set(details['threads_start_num'])
+        self.rows.set(details['rows_num'])
+        self.colors_list = details['colors']
+        self.main_array = details['knots']
+        self.threads_colors_array = details['threads']
+        self.rows_num = details['rows_num']
+        self.threads_start_num = details['threads_start_num']
 
-        with open(path_to_file, 'r') as fp:
-            data = fp.read()
-            details = ast.literal_eval(data)
-            self.colors_list = details['colors']
-            self.main_array = details['knots']
-            self.threads_colors_array = details['threads']
-            self.rows_num = details['rows_num']
-            self.threads_start_num = details['threads_start_num']
-            self.left_add_drop_sit = details['left_add_drop_sit']
-            self.threads.set(details['threads_start_num'])
-            self.rows.set(details['rows_num'])
-
-            self.canvas_lf.delete('all')
-            self.color_picker_pad()
-            self.draw_left_num_bar()
-            self.draw_threads()
-            self.draw_knots()
-            self.put_buttons()
+        # draw canvas
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
 
     # ADD/DROP ROWS NUMBERS
     def draw_left_num_bar(self):
@@ -958,6 +943,44 @@ class MainProgram(framework.Framework):
         self.put_buttons()
         self.draw_center_of_threads()
 
+    def two_colors_pattern(self):
+        self.main_array = []
+        for row in range(self.rows.get()):
+            self.main_array.append([])
+            if row % 2 == 0:
+                for column in range(self.threads.get() // 2):
+                    self.main_array[row].append(4)
+            else:
+                for column in range((self.threads.get() - 1) // 2):
+                    self.main_array[row].append(2)
+
+        self.colors_list = []
+
+        if self.threads_start_num % 2 == 0:
+            for z in range(self.threads_start_num):
+                half_colors_1 = list(reversed(sns.color_palette("vlag",  2).as_hex()))
+            for i in range(self.threads_start_num // 2):
+                half_colors_1 += half_colors_1
+            self.colors_list = half_colors_1
+
+
+            print(half_colors_1)
+
+        # else:
+        #     for z in range(self.threads_start_num // 2):
+        #         half_colors_1 = list(reversed(sns.color_palette("husl",  2).as_hex()))
+        #         half_colors_2 = half_colors_1[::-1]
+        #         half_colors_2.pop()
+        #         self.colors_list = half_colors_1 + half_colors_2
+        self.threads_colors_array_handler()
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
+
     # DRAWING
     def draw_threads(self):
 
@@ -1219,8 +1242,7 @@ class MainProgram(framework.Framework):
                    'knots': self.main_array,
                    'threads': self.threads_colors_array,
                    'rows_num': self.rows_num,
-                   'threads_start_num': self.threads_start_num,
-                   'left_add_drop_sit': self.left_add_drop_sit,
+                   'threads_start_num': self.threads_start_num
                    }
 
         filename = asksaveasfile(initialfile='my_bracelet.knw', defaultextension=".knw",
@@ -1248,7 +1270,6 @@ class MainProgram(framework.Framework):
                 self.threads_colors_array = details['threads']
                 self.rows_num = details['rows_num']
                 self.threads_start_num = details['threads_start_num']
-                self.left_add_drop_sit = details['left_add_drop_sit']
 
                 self.canvas_lf.delete('all')
                 self.color_picker_pad()
