@@ -1301,12 +1301,8 @@ class MainProgram(framework.Framework):
         # path to snapshots folder
         snap_dir_path = current_directory / "snapshots"
 
-        # # # Create directory
-        if os.path.exists(snap_dir_path):
-            try:
-                os.rmdir(snap_dir_path)
-            except OSError as error:
-                print(error)
+        # # # Drop directory
+        shutil.rmtree(snap_dir_path)
 
         self.root.destroy()
 
