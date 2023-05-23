@@ -24,7 +24,7 @@ class MainProgram(framework.Framework):
                           "two_colors_pattern")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 8
+    threads_start_num = 9
     rows_num = 30
     colors_list = []
     threads_colors_array = []
@@ -979,30 +979,24 @@ class MainProgram(framework.Framework):
 
         self.colors_list = []
 
-        if self.threads_start_num % 2 == 0:
-            for z in range(self.threads_start_num):
-                half_colors_1 = list(reversed(sns.color_palette("vlag",  2).as_hex()))
-            for i in range(self.threads_start_num // 2):
-                half_colors_1 += half_colors_1
-            self.colors_list = half_colors_1
+        half_colors = list(reversed(sns.color_palette("husl", 2).as_hex()))
+        half_colors_1 = half_colors[0]
+        half_colors_2 = half_colors[1]
+        main_half_colors_list = []
 
+        for z in range(self.threads_start_num):
+            if z % 2 == 0:
+                main_half_colors_list.append(half_colors_1)
+            if z % 2 != 0:
+                main_half_colors_list.append(half_colors_2)
 
-            print(half_colors_1)
+        self.colors_list = main_half_colors_list
 
-        # else:
-        #     for z in range(self.threads_start_num // 2):
-        #         half_colors_1 = list(reversed(sns.color_palette("husl",  2).as_hex()))
-        #         half_colors_2 = half_colors_1[::-1]
-        #         half_colors_2.pop()
-        #         self.colors_list = half_colors_1 + half_colors_2
+        self.canvas_lf.delete('cvch')
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
-        self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     # DRAWING
     def draw_threads(self):
@@ -1157,12 +1151,10 @@ class MainProgram(framework.Framework):
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        # self.draw_left_num_bar()
-        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        # self.draw_center_of_threads()
+
 
     def button_right_clicked(self, i, j):
         self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
