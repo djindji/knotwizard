@@ -1,4 +1,5 @@
 # import necessary libraries
+import time
 import tkinter as tk
 import seaborn as sns
 import knots
@@ -1136,9 +1137,11 @@ class MainProgram(framework.Framework):
                                         lambda event, i=i, j=j: self.button_right_clicked(i, j))
 
     def button_middle_clicked(self, i, j):
+        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
         self.main_array[i][j] = 0
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
+
+        self.threads_colors_array_handler()
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_threads()
@@ -1147,13 +1150,13 @@ class MainProgram(framework.Framework):
         self.draw_center_of_threads()
 
     def button_left_clicked(self, i, j):
+        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
         if self.main_array[i][j] >= 2 or self.main_array[i][j] == 0:
             self.main_array[i][j] = 1
         else:
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_threads()
@@ -1162,14 +1165,13 @@ class MainProgram(framework.Framework):
         self.draw_center_of_threads()
 
     def button_right_clicked(self, i, j):
-
+        self.canvas_lf.after(200, self.canvas_lf.delete('all'))
         if self.main_array[i][j] <= 2 or self.main_array[i][j] >= 4:
             self.main_array[i][j] = 3
         else:
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_threads()
@@ -1239,7 +1241,6 @@ class MainProgram(framework.Framework):
     def save_image(self):
         save_image_test(self)
 
-    # Ok
     def save_as_vector(self):
         x1, y1, x2, y2 = self.canvas_lf.bbox('all')
         w, h = x2 - x1, y2 - y1
