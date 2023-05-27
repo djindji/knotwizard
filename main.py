@@ -1,22 +1,48 @@
 # import necessary libraries
-import time
+
+# # # Seaborn python library take too much place and installs Matplot, Pandas and other libraries.
+# Too much size when .exe file created.
+# decided to use ready list with 100 different colors from "reversed(sns.color_palette("husl", 100).as_hex())"
+from my_colors_list import my_colors
+# for get random color from colors list
+import random
+
+# main engine
 import tkinter as tk
-import seaborn as sns
-import knots
-from save_pil_image import *
-from pathlib import Path
 from tkinter.colorchooser import askcolor
 from tkinter.filedialog import asksaveasfile, askopenfilename
+
+# my classes for knots drawing
+import knots
+
+# my script for img PNG, GIF,
+from save_pil_image import *
+
+# for more simple file save, open AND no meter if it Mac, Linux or Windows
+from pathlib import Path
+
+# # # after app closes we need delete folder containing snapshots files
 import atexit
-import framework
-from PIL import Image
-import ast
+# for recursive folder deleting
 import shutil
 
-app_path = Path.cwd()
+# # # for main menu : framework script from "Tkinter-GUI-Application-Development-Blueprints-Second-Edition/Chapter 06/"
+# 'https://github.com/PacktPublishing/Tkinter-GUI-Application-Development-Blueprints-Second-Edition/'
+# special THANKS to Bhaskar Chaudhary for time saving and understanding how Tkinter works.
+import framework
+
+# for image creations from tk.Canvas widget
+from PIL import Image
+
+#  save / read python dictionary from file correctly
+import ast
 
 
+# for basis of app i take chapter 06 from "Tkinter-GUI-Application-Development-Blueprints-Second-Edition" book
+# because of that MainProgram class is a child class of 'framework' script
 class MainProgram(framework.Framework):
+    # tuple of "Top bar" functions. When user clicks on button in "Top bar" app get number of button and run func with
+    # position number from tuple
     tool_bar_functions = ("add_two_thread_from_left",
                           "drop_two_thread_from_left",
                           "add_rows_top",
@@ -24,37 +50,86 @@ class MainProgram(framework.Framework):
                           "two_colors_pattern")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 9
+    threads_start_num = 10
     rows_num = 30
     colors_list = []
     threads_colors_array = []
 
-    # Rows number column show/hide
-    hidden = True
-
-    main_array = []
-
-    colors_bg_test = list(reversed(sns.color_palette("Set3", 20).as_hex()))
-    # main_bg_color = colors_bg_test[3] #dddcd1
-    main_bg_color = '#dddcd1'
-
-    snapshot_counter = 0
-
     line_counter = 0
 
+    # To show/hide (rows number column) boolean variable needed. As tk.Checkbox used.
+    # func == self.draw_left_num_bar()  for: first time drawing and redrawing
+    # func == self.hide_left_num_bar()  for: hide
+    hidden = True
+
+    # # #  List/array to hold knots numbers. Possibilities are:
+    #   0 - not knitted                  ( | | )
+    #   1 - left thread to right         (  \  )
+    #   2 - left to left                 (  >  )
+    #   3 - right thread to left         (  /  )
+    #   4 - right to right               (  <  )
+    #
+    #   func ==  self.create_main_array()   for: create array with all zeroes,
+    #                                            array length = rows_num,
+    #                                            array columns number depends on threads number.
+    #
+    #                                            if it threads number even (16, 20) :
+    #                                               columns number in even row (0,2,4 ... +2) == threads number // 2
+    #
+    #                                               in not even (1,3,5 ... + 2) == (threads number - 1) // 2
+    #
+    #                                               0   0 0 0 0 0 0
+    #                                               1    0 0 0 0 0
+    #                                               2   0 0 0 0 0 0
+    #                                               3    0 0 0 0 0
+    #                                               4   0 0 0 0 0 0
+    #
+    #
+    #                                            if threads number not even (19, 23 ....):
+    #                                               columns number in every row == (threads number - 1) // 2
+    #                                                                               (19 - 1) // 2 == 9
+    #
+    #                                               0   0 0 0 0 0
+    #                                               1    0 0 0 0 0
+    #                                               2   0 0 0 0 0
+    #                                               3    0 0 0 0 0
+    #                                               4   0 0 0 0 0
+    #
+    #
+
+    # # #  Changes by user click on knot button area.
+
+    #   func == self.button_left_clicked()
+    #    Left mouse button click 1 (\)
+    #    Left mouse button click 2 (>)
+
+    #   func == self.button_right_clicked()
+    #    Right mouse button click 1 (/)
+    #    Right mouse button click 2 (<)
+
+    #  func == self.button_right_clicked()
+    #   Middle mouse button click  (||)
+    main_array = []
+
+    # user may change background color but app need some color to start
+    main_bg_color = '#dddcd1'
+
     def __init__(self, root):
-        # Threads and Rows integers o
+        # Threads and Rows integer variables
         self.threads = tk.IntVar()
         self.rows = tk.IntVar()
 
+        # this variable depends on monitor width (int)
         self.max_threads = tk.IntVar()
 
-        self.checkCmd = tk.StringVar()
-        self.checkCmd_1 = tk.StringVar()
-        self.checkCmd_2 = tk.StringVar()
-        self.checkCmd_3 = tk.StringVar()
+        # snapshots checkboxes boolean variables
+        self.checkCmd = tk.BooleanVar()
+        self.checkCmd_1 = tk.BooleanVar()
+        self.checkCmd_2 = tk.BooleanVar()
+        self.checkCmd_3 = tk.BooleanVar()
 
-        self.selected_toolbar_func_index = tk.StringVar()
+        # description line 44
+        self.selected_toolbar_func_index = tk.IntVar()
 
         self.menubar = tk.Menu()
         self.canvas = tk.Canvas()
@@ -99,18 +174,20 @@ class MainProgram(framework.Framework):
 
         self.top_frame = tk.Frame(self.window, bg=self.main_bg_color)
 
+        icon_path = Path.cwd() / 'icons'
+
         # Create icons tuple
         icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors')
         for i, icon in enumerate(icons):
             if i == 0:
 
-                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 1:
-                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
@@ -140,13 +217,13 @@ class MainProgram(framework.Framework):
 
 
             if i == 2:
-                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 3:
-                tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
@@ -164,75 +241,74 @@ class MainProgram(framework.Framework):
                                         )
                 row_widget.pack(side='left')
                 row_widget.bind("<Return>", lambda event: self.add_drop_rows_bottom())
-                tk.Label(self.top_frame, bg=self.main_bg_color, width=10).pack(side='left')
+                #tk.Label(self.top_frame, bg=self.main_bg_color, width=10).pack(side='left')
 
-                tk.Label(self.top_frame, bg=self.main_bg_color, width=2).pack(side='left')
+                #tk.Label(self.top_frame, bg=self.main_bg_color, width=2).pack(side='left')
+
+            if i == 4:
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar.image = tool_bar_icon
+                tool_bar.pack(side='left', padx=60)
 
         self.snp_frame = tk.Frame(self.top_frame, bg=self.main_bg_color)
 
-        self.checkCmd.set('0')
+
 
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd,
+                       onvalue=None,
                        indicatoron=True,
                        activebackground='black',
                        background=self.main_bg_color,
                        selectcolor="white",
                        width=1,
-
                        foreground="black",
                        command=lambda: self.on_check()).grid(row=0, sticky='n')
 
-        self.checkCmd_1.set('0')
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd_1,
+                       onvalue=None,
                        indicatoron=True,
                        activebackground='black',
                        background=self.main_bg_color,
                        selectcolor="white",
                        width=1,
-
                        foreground="black",
                        command=lambda: self.on_check_1()
                        ).grid(row=0, column=3, sticky='n')
 
-        self.checkCmd_2.set('0')
-
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd_2,
+                       onvalue=None,
                        indicatoron=True,
                        activebackground='black',
                        background=self.main_bg_color,
                        selectcolor="white",
                        width=1,
-
                        foreground="black",
                        command=lambda: self.on_check_2()).grid(row=0, column=5, sticky='n')
 
-        self.checkCmd_3.set('0')
-
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd_3,
+                       onvalue=None,
                        indicatoron=True,
                        activebackground='black',
                        background=self.main_bg_color,
                        selectcolor="white",
                        width=1,
-
                        foreground="black",
                        command=lambda: self.on_check_3()).grid(row=0, column=7, sticky='n')
 
-
-
         self.snp_frame.pack(side='left')
 
-        if i == 4:
-            tool_bar_icon = tk.PhotoImage(file='icons/{}.gif'.format(icon))
-            tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
-                                 command=lambda i=i: self.selected_tool_bar_item(i))
-            tool_bar.image = tool_bar_icon
-            tool_bar.pack(side='top', padx=60)
-
+        # if i == 4:
+        #     tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
+        #     tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+        #                          command=lambda i=i: self.selected_tool_bar_item(i))
+        #     tool_bar.image = tool_bar_icon
+        #     tool_bar.pack(side='top', padx=60)
 
         self.top_frame.pack(side="left", anchor='n')
 
@@ -261,10 +337,29 @@ class MainProgram(framework.Framework):
         self.left_frame.pack(fill=tk.X, padx=5, pady=5,)
 
 
-    # SNAPSHOTS AREA
-    def on_check(self):
 
-        if self.checkCmd.get() == "0":
+
+    # SNAPSHOTS AREA logic
+    #
+    # SAVE
+    # 1. user click check box
+    # 2. app create dictionary with values of: (self.colors_list,
+    #                                           self.threads.get(),
+    #                                           self.rows.get(),
+    #                                           self.main_array,
+    #                                           self.threads_colors_array,
+    #                                           self.hidden)
+    # 3. create folder "snapshots" in app working directory  if not exists      snapshots/
+    # 4. write dictionary to file snapshots_(1-4).txt                           snapshots/snapshot_(1-4).txt
+
+    # OPEN
+    # 1. read file
+    # 2. rewrite variables
+    # 3. delete canvas_lf all elements
+    # 4. draw canvas_lf with new variables
+
+    def on_check(self):
+        if self.checkCmd.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='1', bg='#bba5bc',
@@ -272,8 +367,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=1)
-
-        if self.checkCmd.get() == "1":
+        if self.checkCmd.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='1', bg='#bba5bc',
@@ -283,12 +377,99 @@ class MainProgram(framework.Framework):
                       relief='raised',
                       command=lambda: self.run_snapshot()).grid(row=0, column=1)
 
-            # Dictionary
-            my_dict = {'colors': self.colors_list,
-                       'knots': self.main_array,
-                       'threads': self.threads_colors_array,
-                       'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num}
+            # create dictionary
+            my_dict = {'threads_colors': self.colors_list,
+                       'threads_num': self.threads.get(),
+                       'rows_num': self.rows.get(),
+                       'knots_array': self.main_array,
+                       'threads_colors_array': self.threads_colors_array,
+                       'rows_number_hidden': self.hidden}
+
+            # current directory
+            current_directory = Path.cwd()
+            # path to snapshots folder
+            snap_dir_path = current_directory / "snapshots"
+            print(snap_dir_path)
+
+            # # # Create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
+
+            # path to snapshot file
+            path_to_file = snap_dir_path / "snapshot_0.txt"
+            # write to file
+            path_to_file.write_text(str(my_dict))
+
+    def run_snapshot(self):
+        # current directory
+        current_directory = Path.cwd()
+        # path to snapshots folder
+        snap_file_path = current_directory / "snapshots" / 'snapshot_0.txt'
+        # read file
+        text = snap_file_path.read_text()
+        # put data from file to list
+        details = ast.literal_eval(text)
+
+        # rewrite variables
+        # threads colors array
+        self.colors_list = details['threads_colors']
+
+        # number of threads
+        # change number in Spinbox
+        self.threads.set(details['threads_num'])
+        # change "threads_start_num" variable
+        self.threads_start_num = details['threads_num']
+
+        # number of rows
+        # change number in Spinbox
+        self.rows.set(details['rows_num'])
+        # change "rows_num" variable
+        self.rows_num = details['rows_num']
+
+        # change knots array to new array
+        self.main_array = details['knots_array']
+
+        # change threads colors array
+        self.threads_colors_array = details['threads_colors_array']
+
+        # show/hide rows numbers bar
+        self.hidden = details['rows_number_hidden']
+
+        # draw canvas
+        self.canvas_lf.delete('all')
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+        self.draw_center_of_threads()
+
+    def on_check_1(self):
+        if self.checkCmd_1.get() == 0:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='2', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='disabled',
+                      relief='flat').grid(row=0, column=4)
+
+        if self.checkCmd_1.get() == 1:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='2', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='active',
+                      relief='raised',
+                      command=lambda: self.run_snapshot_1()).grid(row=0, column=4)
+
+            # create dictionary
+            my_dict = {'threads_colors': self.colors_list,
+                       'threads_num': self.threads.get(),
+                       'rows_num': self.rows.get(),
+                       'knots_array': self.main_array,
+                       'threads_colors_array': self.threads_colors_array,
+                       'rows_number_hidden': self.hidden}
 
             # current directory
             current_directory = Path.cwd()
@@ -304,7 +485,7 @@ class MainProgram(framework.Framework):
             # write to file
             path_to_file.write_text(str(my_dict))
 
-    def run_snapshot(self):
+    def run_snapshot_1(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
@@ -315,13 +496,29 @@ class MainProgram(framework.Framework):
         details = ast.literal_eval(text)
 
         # rewrite variables
-        self.threads.set(details['threads_start_num'])
+        # threads colors array
+        self.colors_list = details['threads_colors']
+
+        # number of threads
+        # change number in Spinbox
+        self.threads.set(details['threads_num'])
+        # change "threads_start_num" variable
+        self.threads_start_num = details['threads_num']
+
+        # number of rows
+        # change number in Spinbox
         self.rows.set(details['rows_num'])
-        self.colors_list = details['colors']
-        self.main_array = details['knots']
-        self.threads_colors_array = details['threads']
+        # change "rows_num" variable
         self.rows_num = details['rows_num']
-        self.threads_start_num = details['threads_start_num']
+
+        # change knots array to new array
+        self.main_array = details['knots_array']
+
+        # change threads colors array
+        self.threads_colors_array = details['threads_colors_array']
+
+        # show/hide rows numbers bar
+        self.hidden = details['rows_number_hidden']
 
         # draw canvas
         self.canvas_lf.delete('all')
@@ -332,34 +529,35 @@ class MainProgram(framework.Framework):
         self.put_buttons()
         self.draw_center_of_threads()
 
-    def on_check_1(self):
+    def on_check_2(self):
 
-        if self.checkCmd_1.get() == "0":
+        if self.checkCmd_2.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
-                      text='2', bg='#bba5bc',
+                      text='3', bg='#bba5bc',
                       foreground='white',
                       width=3,
                       state='disabled',
-                      relief='flat').grid(row=0, column=4)
+                      relief='flat').grid(row=0, column=6)
 
-        if self.checkCmd_1.get() == "1":
+        if self.checkCmd_2.get() == 1:
 
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
-                      text='2', bg='#bba5bc',
+                      text='3', bg='#bba5bc',
                       foreground='white',
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot_1()).grid(row=0, column=4)
+                      command=lambda: self.run_snapshot_2()).grid(row=0, column=6)
 
-            # Dictionary
-            my_dict = {'colors': self.colors_list,
-                       'knots': self.main_array,
-                       'threads': self.threads_colors_array,
-                       'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num}
+            # create dictionary
+            my_dict = {'threads_colors': self.colors_list,
+                       'threads_num': self.threads.get(),
+                       'rows_num': self.rows.get(),
+                       'knots_array': self.main_array,
+                       'threads_colors_array': self.threads_colors_array,
+                       'rows_number_hidden': self.hidden}
 
             # current directory
             current_directory = Path.cwd()
@@ -375,7 +573,7 @@ class MainProgram(framework.Framework):
             # write to file
             path_to_file.write_text(str(my_dict))
 
-    def run_snapshot_1(self):
+    def run_snapshot_2(self):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
@@ -386,84 +584,29 @@ class MainProgram(framework.Framework):
         details = ast.literal_eval(text)
 
         # rewrite variables
-        self.threads.set(details['threads_start_num'])
+        # threads colors array
+        self.colors_list = details['threads_colors']
+
+        # number of threads
+        # change number in Spinbox
+        self.threads.set(details['threads_num'])
+        # change "threads_start_num" variable
+        self.threads_start_num = details['threads_num']
+
+        # number of rows
+        # change number in Spinbox
         self.rows.set(details['rows_num'])
-        self.colors_list = details['colors']
-        self.main_array = details['knots']
-        self.threads_colors_array = details['threads']
+        # change "rows_num" variable
         self.rows_num = details['rows_num']
-        self.threads_start_num = details['threads_start_num']
 
-        # draw canvas
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
-        self.color_picker_pad()
-        self.draw_threads()
-        self.draw_knots()
-        self.put_buttons()
-        self.draw_center_of_threads()
+        # change knots array to new array
+        self.main_array = details['knots_array']
 
-    def on_check_2(self):
+        # change threads colors array
+        self.threads_colors_array = details['threads_colors_array']
 
-        if self.checkCmd_2.get() == "0":
-            tk.Button(self.snp_frame,
-                      font=("Arial", 18, 'bold'),
-                      text='3', bg='#bba5bc',
-                      foreground='white',
-                      width=3,
-                      state='disabled',
-                      relief='flat').grid(row=0, column=6)
-
-        if self.checkCmd_2.get() == "1":
-
-            tk.Button(self.snp_frame,
-                      font=("Arial", 18, 'bold'),
-                      text='3', bg='#bba5bc',
-                      foreground='white',
-                      width=3,
-                      state='active',
-                      relief='raised',
-                      command=lambda: self.run_snapshot_2()).grid(row=0, column=6)
-
-            # Dictionary
-            my_dict = {'colors': self.colors_list,
-                       'knots': self.main_array,
-                       'threads': self.threads_colors_array,
-                       'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num}
-
-            # current directory
-            current_directory = Path.cwd()
-            # path to snapshots folder
-            snap_dir_path = current_directory / "snapshots"
-            print(snap_dir_path)
-
-            # # # Create directory if not exists
-            snap_dir_path.mkdir(exist_ok=True)
-
-            # path to snapshot file
-            path_to_file = snap_dir_path / "snapshot_3.txt"
-            # write to file
-            path_to_file.write_text(str(my_dict))
-
-    def run_snapshot_2(self):
-        # current directory
-        current_directory = Path.cwd()
-        # path to snapshots folder
-        snap_file_path = current_directory / "snapshots" / 'snapshot_3.txt'
-        # read file
-        text = snap_file_path.read_text()
-        # put data from file to list
-        details = ast.literal_eval(text)
-
-        # rewrite variables
-        self.threads.set(details['threads_start_num'])
-        self.rows.set(details['rows_num'])
-        self.colors_list = details['colors']
-        self.main_array = details['knots']
-        self.threads_colors_array = details['threads']
-        self.rows_num = details['rows_num']
-        self.threads_start_num = details['threads_start_num']
+        # show/hide rows numbers bar
+        self.hidden = details['rows_number_hidden']
 
         # draw canvas
         self.canvas_lf.delete('all')
@@ -476,7 +619,7 @@ class MainProgram(framework.Framework):
 
     def on_check_3(self):
 
-        if self.checkCmd_3.get() == "0":
+        if self.checkCmd_3.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='4', bg='#bba5bc',
@@ -485,7 +628,7 @@ class MainProgram(framework.Framework):
                       state='disabled',
                       relief='flat').grid(row=0, column=8)
 
-        if self.checkCmd_3.get() == "1":
+        if self.checkCmd_3.get() == 1:
 
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
@@ -496,12 +639,13 @@ class MainProgram(framework.Framework):
                       relief='raised',
                       command=lambda: self.run_snapshot_3()).grid(row=0, column=8)
 
-            # Dictionary
-            my_dict = {'colors': self.colors_list,
-                       'knots': self.main_array,
-                       'threads': self.threads_colors_array,
-                       'rows_num': self.rows_num,
-                       'threads_start_num': self.threads_start_num}
+            # create dictionary
+            my_dict = {'threads_colors': self.colors_list,
+                       'threads_num': self.threads.get(),
+                       'rows_num': self.rows.get(),
+                       'knots_array': self.main_array,
+                       'threads_colors_array': self.threads_colors_array,
+                       'rows_number_hidden': self.hidden}
 
             # current directory
             current_directory = Path.cwd()
@@ -511,9 +655,8 @@ class MainProgram(framework.Framework):
 
             # # # Create directory if not exists
             snap_dir_path.mkdir(exist_ok=True)
-
             # path to snapshot file
-            path_to_file = snap_dir_path / "snapshot_4.txt"
+            path_to_file = snap_dir_path / "snapshot_3.txt"
             # write to file
             path_to_file.write_text(str(my_dict))
 
@@ -521,20 +664,36 @@ class MainProgram(framework.Framework):
         # current directory
         current_directory = Path.cwd()
         # path to snapshots folder
-        snap_file_path = current_directory / "snapshots" / 'snapshot_4.txt'
+        snap_file_path = current_directory / "snapshots" / 'snapshot_3.txt'
         # read file
         text = snap_file_path.read_text()
         # put data from file to list
         details = ast.literal_eval(text)
 
         # rewrite variables
-        self.threads.set(details['threads_start_num'])
+        # threads colors array
+        self.colors_list = details['threads_colors']
+
+        # number of threads
+        # change number in Spinbox
+        self.threads.set(details['threads_num'])
+        # change "threads_start_num" variable
+        self.threads_start_num = details['threads_num']
+
+        # number of rows
+        # change number in Spinbox
         self.rows.set(details['rows_num'])
-        self.colors_list = details['colors']
-        self.main_array = details['knots']
-        self.threads_colors_array = details['threads']
+        # change "rows_num" variable
         self.rows_num = details['rows_num']
-        self.threads_start_num = details['threads_start_num']
+
+        # change knots array to new array
+        self.main_array = details['knots_array']
+
+        # change threads colors array
+        self.threads_colors_array = details['threads_colors_array']
+
+        # show/hide rows numbers bar
+        self.hidden = details['rows_number_hidden']
 
         # draw canvas
         self.canvas_lf.delete('all')
@@ -546,51 +705,73 @@ class MainProgram(framework.Framework):
         self.draw_center_of_threads()
 
 
-    # ADD/DROP ROWS NUMBERS
-    def draw_left_num_bar(self):
-        num_bar_height = self.rows.get() * 100
 
+
+    # SHOW/HIDE ROWS NUMBERS
+    def draw_left_num_bar(self):
+        # the same height as 'self.canvas_lf' scroll-region height
+        num_bar_height = self.rows.get() * 41
+
+        # create window for rows numbers (parent canvas_lf)
         self.canvas = tk.Canvas(self.canvas_lf, width=50, height=num_bar_height, bg=self.main_bg_color)
         self.canvas_lf.create_window(2, 2, anchor='nw',  window=self.canvas)
 
+        # put check button
         checkbutton = tk.Checkbutton(self.canvas,
-                                     onvalue=True,
+                                     onvalue=self.hidden,
                                      bg=self.main_bg_color,
                                      foreground='#9A9A92',
                                      activebackground=self.main_bg_color,
                                      selectcolor=self.main_bg_color,
-                                     command=lambda: self.drop_left_num_bar())
-        checkbutton.select()
+                                     command=lambda: self.hide_left_num_bar())
+        # create window
         self.canvas.create_window(30, 10, window=checkbutton)
 
-        for i in range(self.rows.get()):
-            label_row_padding = 30
-            if i % 2 == 0:
-                label_row = tk.Label(self.canvas,
-                                     text=str(i + 1),
-                                     font=("Arial", 7, 'bold'),
-                                     bg=self.main_bg_color)
-                self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
-                label_row.config(fg='#6E6E68')
+        # if hidden is 'True'
+        if self.hidden:
+            checkbutton.select()
+            for i in range(self.rows.get()):
+                label_row_padding = 30
+                if i % 2 == 0:
+                    label_row = tk.Label(self.canvas,
+                                         text=str(i + 1),
+                                         font=("Arial", 7, 'bold'),
+                                         bg=self.main_bg_color)
+                    self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
+                    label_row.config(fg='#6E6E68')
 
-            if i % 2 != 0:
-                label_row = tk.Label(self.canvas, text=str(i + 1), font=("Arial", 7, "bold"), bg=self.main_bg_color)
-                self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
-                label_row.config(fg='#6E6E68')
+                if i % 2 != 0:
+                    label_row = tk.Label(self.canvas, text=str(i + 1), font=("Arial", 7, "bold"), bg=self.main_bg_color)
+                    self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
+                    label_row.config(fg='#6E6E68')
 
-    def drop_left_num_bar(self):
+    def hide_left_num_bar(self):
+        # destroy
         if self.hidden:
             for item in self.canvas.winfo_children():
                 if item.cget("fg") == '#6E6E68':
-                    item.config(fg=self.main_bg_color)
+                    item.destroy()
             self.hidden = False
 
+        # redraw
         else:
-            for item in self.canvas.winfo_children():
-                if item.cget("fg") == self.main_bg_color:
-                    item.config(fg='#6E6E68')
+            for i in range(self.rows.get()):
+                label_row_padding = 30
+                if i % 2 == 0:
+                    label_row = tk.Label(self.canvas,
+                                         text=str(i + 1),
+                                         font=("Arial", 7, 'bold'),
+                                         bg=self.main_bg_color)
+                    self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
+                    label_row.config(fg='#6E6E68')
+
+                if i % 2 != 0:
+                    label_row = tk.Label(self.canvas, text=str(i + 1), font=("Arial", 7, "bold"), bg=self.main_bg_color)
+                    self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
+                    label_row.config(fg='#6E6E68')
 
             self.hidden = True
+
 
 
     # COLOR PICKER
@@ -616,7 +797,6 @@ class MainProgram(framework.Framework):
             self.draw_knots()
             self.put_buttons()
 
-
     # DRAW THREADS CENTER
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
@@ -626,7 +806,6 @@ class MainProgram(framework.Framework):
         if self.threads.get() % 2 != 0:
             center = self.threads.get() // 2
             self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 48], fill='grey', width=2)
-
 
     # MAIN KNOTS ARRAY
     def create_main_array(self):
@@ -644,21 +823,33 @@ class MainProgram(framework.Framework):
 
     # COLORS
     def colors(self):
+        # take colors for threads from my_colors list
+        # for drawing threads symmetrically i take only half of threads number, put half random colors to
+        # self.colors_list and other half  add to self.colors_list by reverse
+        #  1 2 3 4 5  5 4 3 2 1
+
         if self.threads_start_num % 2 == 0:
-            for z in range(self.threads_start_num):
-                half_colors_1 = list(reversed(sns.color_palette("husl", self.threads_start_num // 2).as_hex()))
-                half_colors_2 = half_colors_1[::-1]
-                self.colors_list = half_colors_1 + half_colors_2
+            half_colors_1 = []
+            for z in range(self.threads_start_num // 2):
+                random_number = random.randint(0, 99)
+                half_colors_1.append(my_colors[random_number])
+
+            half_colors_2 = half_colors_1[::-1]
+            self.colors_list = half_colors_1 + half_colors_2
+
+            print(self.colors_list)
 
         else:
+            half_colors_1 = []
             for z in range(self.threads_start_num // 2):
-                half_colors_1 = list(reversed(sns.color_palette("husl", self.threads_start_num // 2 + 1).as_hex()))
+                random_number = random.randint(0, 99)
+                half_colors_1.append(my_colors[random_number])
                 half_colors_2 = half_colors_1[::-1]
                 half_colors_2.pop()
                 self.colors_list = half_colors_1 + half_colors_2
 
-    def threads_colors_array_handler(self):
 
+    def threads_colors_array_handler(self):
         # Clear threads_colors_array if not empty
         self.threads_colors_array = []
         for row in range(self.rows.get()):
@@ -690,25 +881,25 @@ class MainProgram(framework.Framework):
                             self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][(column * 2) + 2]
                             self.threads_colors_array[k][(column * 2) + 2] = self.threads_colors_array[row][(column * 2) + 1]
 
-
     # TOP BAR BUTTONS FUNCTIONS
+
     def selected_tool_bar_item(self, i):
         self.selected_toolbar_func_index = i
         self.execute_method()
 
     def execute_method(self):
-        fnc = getattr(self, self.tool_bar_functions[int(self.selected_toolbar_func_index)])
+        fnc = getattr(self, self.tool_bar_functions[self.selected_toolbar_func_index])
         fnc()
 
     def add_two_thread_from_left(self):
-
         thn_after_click = self.threads.get() + 2
         self.threads.set(thn_after_click)
 
-        # Insert new  colors to 0 color list
-        add_thr_num = 2
+        colors_append = []
+        for i in range(2):
+            rand = random.randint(0, 99)
+            colors_append.append(my_colors[rand])
 
-        colors_append = list(reversed(sns.color_palette("husl", add_thr_num).as_hex()))
         for i in range(len(colors_append)):
             self.colors_list.insert(0, colors_append[i])
 
@@ -721,13 +912,13 @@ class MainProgram(framework.Framework):
         self.threads_start_num = thn_after_click
 
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
+        self.canvas_lf.delete('cvch')
+        self.threads_colors_array_handler()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     def drop_two_thread_from_left(self):
         thn_after_click = self.threads.get() - 2
@@ -741,13 +932,11 @@ class MainProgram(framework.Framework):
         # make threads_start_num == new value
         self.threads_start_num = thn_after_click
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
-        self.color_picker_pad()
+        self.canvas_lf.delete('cvch')
+        self.threads_colors_array_handler()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     def add_drop_thread_from_right(self):
         if self.threads.get() >= self.max_threads:
@@ -758,7 +947,11 @@ class MainProgram(framework.Framework):
         if thn_after_click > self.threads_start_num:
             add_thr_num = thn_after_click - self.threads_start_num
 
-            colors_append = list(reversed(sns.color_palette("husl", add_thr_num).as_hex()))
+            colors_append = []
+            for i in range(add_thr_num):
+                rand = random.randint(0, 99)
+                colors_append.append(my_colors[rand])
+
             for i in range(len(colors_append)):
                 self.colors_list.append(colors_append[i])
 
@@ -826,12 +1019,10 @@ class MainProgram(framework.Framework):
                             self.main_array[row].pop()
 
         self.threads_start_num = thn_after_click
-
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
+        self.canvas_lf.delete('cvch')
+        self.threads_colors_array_handler()
         self.color_picker_pad()
-        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
@@ -928,22 +1119,14 @@ class MainProgram(framework.Framework):
         # Insert new array in start of old array
         self.main_array = new_array + self.main_array
 
-        for widgets in self.root.winfo_children():
-            widgets.destroy()
-
-        self.main_window()
-        self.on_check()
-        self.on_check_1()
-        self.on_check_2()
-        self.on_check_3()
         self.threads_colors_array_handler()
+        self.canvas_lf.delete('all')
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
         self.draw_center_of_threads()
-        self.create_menu()
 
     def drop_rows_top(self):
         if self.rows.get() < 31:
@@ -979,9 +1162,8 @@ class MainProgram(framework.Framework):
 
         self.colors_list = []
 
-        half_colors = list(reversed(sns.color_palette("husl", 2).as_hex()))
-        half_colors_1 = half_colors[0]
-        half_colors_2 = half_colors[1]
+        half_colors_1 = my_colors[random.randint(0, 99)]
+        half_colors_2 = my_colors[random.randint(0, 99)]
         main_half_colors_list = []
 
         for z in range(self.threads_start_num):
@@ -992,15 +1174,16 @@ class MainProgram(framework.Framework):
 
         self.colors_list = main_half_colors_list
 
+        # redraw canvas
         self.canvas_lf.delete('cvch')
         self.threads_colors_array_handler()
+        self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
 
     # DRAWING
     def draw_threads(self):
-
         for i in range(self.rows.get()):
             for j in range(self.threads.get()):
                 color_num = self.threads_colors_array[i][j]
@@ -1010,7 +1193,7 @@ class MainProgram(framework.Framework):
                                            (38 * i) + 60,
                                            (20 * j) + 70,
                                            (38 * i) + 98,
-                                           fill=color, width=2, tags='cvch')
+                                           fill=color, width=3, tags='cvch')
 
     def draw_knots(self):
         for i in range(len(self.main_array)):
@@ -1154,7 +1337,6 @@ class MainProgram(framework.Framework):
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-
 
     def button_right_clicked(self, i, j):
         self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
@@ -1385,10 +1567,6 @@ class MainProgram(framework.Framework):
     def parent_func(self):
         self.save_image()
         self.top.destroy()
-
-    def test_function(self):
-        colors_bg_test = list(reversed(sns.color_palette("husl", self.threads_start_num).as_hex()))
-        self.main_bg_color = colors_bg_test[0]
 
 
 def main():
