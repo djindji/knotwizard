@@ -52,9 +52,14 @@ class MainProgram(framework.Framework):
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 10
     rows_num = 30
+
+    # list of current app colors
     colors_list = []
+
+    # list of current threads colors in every row and column
     threads_colors_array = []
 
+    # for correctly create pattern image with information on it
     line_counter = 0
 
     # To show/hide (rows number column) boolean variable needed. As tk.Checkbox used.
@@ -159,41 +164,47 @@ class MainProgram(framework.Framework):
         self.draw_center_of_threads()
         self.create_menu()
 
-    # VISUALISATION
+    # FRAMES AND PACK
     def main_window(self):
         # Save monitor dimensions (width and height) to variables
-        monitor_width = self.root.winfo_screenwidth()
-        monitor_height = self.root.winfo_screenheight()
-        self.threads.set(self.threads_start_num)
+        self.monitor_width = self.root.winfo_screenwidth()
+        self.monitor_height = self.root.winfo_screenheight()
 
         # Create main frame
         self.window = tk.Frame(self.root,
-                               width=monitor_width * 0.75,
-                               height=monitor_height,
+                               width=self.monitor_width * 0.75,
+                               height=self.monitor_height,
                                bg=self.main_bg_color)
 
+        # create top frame for buttons
         self.top_frame = tk.Frame(self.window, bg=self.main_bg_color)
 
+        # pass to icons images
         icon_path = Path.cwd() / 'icons'
-
-        # Create icons tuple
+        # Create tuple with icons images names
         icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors')
+
+        # put buttons on top frame and take images for buttons from '/icons' folder
         for i, icon in enumerate(icons):
             if i == 0:
-
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
             if i == 1:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
                 # max threads number devoted by monitor width
-                self.max_threads = ((monitor_width - 140) // 20)
+                self.max_threads = ((self.monitor_width - 140) // 20)
+
+                # set variable threads to "threads_start_num" (if user run app first time, app needs values)
+                self.threads.set(self.threads_start_num)
 
                 thread_spinbox_right = tk.Spinbox(self.top_frame,
                                                   from_=6,
@@ -202,11 +213,11 @@ class MainProgram(framework.Framework):
                                                   textvariable=self.threads,
                                                   font=("Arial", 26, 'bold'),
                                                   command=self.add_drop_thread_from_right,
-                                                  foreground=self.main_bg_color
-                                                  )
+                                                  foreground=self.main_bg_color)
+
                 # Put thread_spinbox on top_frame
                 thread_spinbox_right.pack(side='left')
-                # when user put number and hit enter
+                # if user put number and hit enter in spinbox window run "self.add_drop_thread_from_right" func
                 thread_spinbox_right.bind("<Return>", (lambda event: self.add_drop_thread_from_right()))
 
                 # max threads label
@@ -215,10 +226,10 @@ class MainProgram(framework.Framework):
 
                 tk.Label(self.top_frame, bg=self.main_bg_color, width=3).pack(side='left', anchor='nw')
 
-
             if i == 2:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
-                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon, command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
@@ -229,21 +240,18 @@ class MainProgram(framework.Framework):
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
+                # # set variable rows to "trows_num" (if user run app first time, app needs values)
                 self.rows.set(self.rows_num)
-
-                # rows = 20
+                # create spinbox
                 row_widget = tk.Spinbox(self.top_frame,
                                         from_=30, to=200, width=3,
                                         textvariable=self.rows,
                                         font=("Arial", 26, 'bold'),
                                         foreground=self.main_bg_color,
-                                        command=self.add_drop_rows_bottom
-                                        )
+                                        command=self.add_drop_rows_bottom)
                 row_widget.pack(side='left')
+                # if user change rows number in spinbox window and hit <ENTER>, run self.add_drop_rows_bottom func
                 row_widget.bind("<Return>", lambda event: self.add_drop_rows_bottom())
-                #tk.Label(self.top_frame, bg=self.main_bg_color, width=10).pack(side='left')
-
-                #tk.Label(self.top_frame, bg=self.main_bg_color, width=2).pack(side='left')
 
             if i == 4:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
@@ -252,10 +260,9 @@ class MainProgram(framework.Framework):
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=60)
 
+
+        # snapshots area
         self.snp_frame = tk.Frame(self.top_frame, bg=self.main_bg_color)
-
-
-
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd,
                        onvalue=None,
@@ -276,8 +283,7 @@ class MainProgram(framework.Framework):
                        selectcolor="white",
                        width=1,
                        foreground="black",
-                       command=lambda: self.on_check_1()
-                       ).grid(row=0, column=3, sticky='n')
+                       command=lambda: self.on_check_1()).grid(row=0, column=3, sticky='n')
 
         tk.Checkbutton(self.snp_frame,
                        variable=self.checkCmd_2,
@@ -303,38 +309,30 @@ class MainProgram(framework.Framework):
 
         self.snp_frame.pack(side='left')
 
-        # if i == 4:
-        #     tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
-        #     tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
-        #                          command=lambda i=i: self.selected_tool_bar_item(i))
-        #     tool_bar.image = tool_bar_icon
-        #     tool_bar.pack(side='top', padx=60)
-
         self.top_frame.pack(side="left", anchor='n')
 
         self.window.pack(anchor='w', fill=tk.X,)
 
         # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
         self.left_frame = tk.Frame(self.root,
-                                   width=monitor_width,
+                                   width=self.monitor_width,
                                    # for scrolling to be visible
-                                   height=monitor_height,
-                                   bg=self.main_bg_color,
-                                   )
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color)
 
         self.canvas_lf = tk.Canvas(self.left_frame,
-                                   width=monitor_width,
-                                   height=monitor_height,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
                                    bg=self.main_bg_color,
                                    scrollregion=(0, 0, 500, self.rows_num * 41))
 
-        scrollbar = tk.Scrollbar(self.left_frame)
-        scrollbar.pack(side="right", fill="y")
-        scrollbar.config(command=self.canvas_lf.yview)
-        self.canvas_lf.config(yscrollcommand=scrollbar.set)
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
         self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
 
-        self.left_frame.pack(fill=tk.X, padx=5, pady=5,)
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
 
 
 
@@ -389,13 +387,12 @@ class MainProgram(framework.Framework):
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
-            print(snap_dir_path)
-
-            # # # Create directory if not exists
-            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_0.txt"
+
+            # create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
             # write to file
             path_to_file.write_text(str(my_dict))
 
@@ -409,23 +406,25 @@ class MainProgram(framework.Framework):
         # put data from file to list
         details = ast.literal_eval(text)
 
-        # rewrite variables
-        # threads colors array
+        # # rewrite variables
+        # # threads colors array
         self.colors_list = details['threads_colors']
 
         # number of threads
         # change number in Spinbox
         self.threads.set(details['threads_num'])
+
         # change "threads_start_num" variable
         self.threads_start_num = details['threads_num']
-
+        #
         # number of rows
-        # change number in Spinbox
-        self.rows.set(details['rows_num'])
         # change "rows_num" variable
+        # change number in Spinbox
+
+        self.rows.set(details['rows_num'])
         self.rows_num = details['rows_num']
 
-        # change knots array to new array
+        # # change knots array to new array
         self.main_array = details['knots_array']
 
         # change threads colors array
@@ -434,14 +433,30 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
-        # draw canvas
-        self.canvas_lf.delete('all')
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
         self.draw_left_num_bar()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     def on_check_1(self):
         if self.checkCmd_1.get() == 0:
@@ -452,7 +467,6 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=4)
-
         if self.checkCmd_1.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
@@ -461,7 +475,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot_1()).grid(row=0, column=4)
+                      command=lambda: self.run_snapshot()).grid(row=0, column=4)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -475,13 +489,12 @@ class MainProgram(framework.Framework):
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
-            print(snap_dir_path)
-
-            # # # Create directory if not exists
-            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_1.txt"
+
+            # create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
             # write to file
             path_to_file.write_text(str(my_dict))
 
@@ -495,23 +508,25 @@ class MainProgram(framework.Framework):
         # put data from file to list
         details = ast.literal_eval(text)
 
-        # rewrite variables
-        # threads colors array
+        # # rewrite variables
+        # # threads colors array
         self.colors_list = details['threads_colors']
 
         # number of threads
         # change number in Spinbox
         self.threads.set(details['threads_num'])
+
         # change "threads_start_num" variable
         self.threads_start_num = details['threads_num']
-
+        #
         # number of rows
-        # change number in Spinbox
-        self.rows.set(details['rows_num'])
         # change "rows_num" variable
+        # change number in Spinbox
+
+        self.rows.set(details['rows_num'])
         self.rows_num = details['rows_num']
 
-        # change knots array to new array
+        # # change knots array to new array
         self.main_array = details['knots_array']
 
         # change threads colors array
@@ -520,18 +535,33 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
-        # draw canvas
-        self.canvas_lf.delete('all')
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
         self.draw_left_num_bar()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     def on_check_2(self):
-
-        if self.checkCmd_2.get() == 0:
+        if self.checkCmd.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='3', bg='#bba5bc',
@@ -539,9 +569,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=6)
-
-        if self.checkCmd_2.get() == 1:
-
+        if self.checkCmd.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='3', bg='#bba5bc',
@@ -549,7 +577,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot_2()).grid(row=0, column=6)
+                      command=lambda: self.run_snapshot()).grid(row=0, column=6)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -563,13 +591,12 @@ class MainProgram(framework.Framework):
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
-            print(snap_dir_path)
-
-            # # # Create directory if not exists
-            snap_dir_path.mkdir(exist_ok=True)
 
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_2.txt"
+
+            # create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
             # write to file
             path_to_file.write_text(str(my_dict))
 
@@ -583,23 +610,25 @@ class MainProgram(framework.Framework):
         # put data from file to list
         details = ast.literal_eval(text)
 
-        # rewrite variables
-        # threads colors array
+        # # rewrite variables
+        # # threads colors array
         self.colors_list = details['threads_colors']
 
         # number of threads
         # change number in Spinbox
         self.threads.set(details['threads_num'])
+
         # change "threads_start_num" variable
         self.threads_start_num = details['threads_num']
-
+        #
         # number of rows
-        # change number in Spinbox
-        self.rows.set(details['rows_num'])
         # change "rows_num" variable
+        # change number in Spinbox
+
+        self.rows.set(details['rows_num'])
         self.rows_num = details['rows_num']
 
-        # change knots array to new array
+        # # change knots array to new array
         self.main_array = details['knots_array']
 
         # change threads colors array
@@ -608,18 +637,33 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
-        # draw canvas
-        self.canvas_lf.delete('all')
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
         self.draw_left_num_bar()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
 
     def on_check_3(self):
-
-        if self.checkCmd_3.get() == 0:
+        if self.checkCmd.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='4', bg='#bba5bc',
@@ -627,9 +671,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=8)
-
-        if self.checkCmd_3.get() == 1:
-
+        if self.checkCmd.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='4', bg='#bba5bc',
@@ -637,7 +679,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot_3()).grid(row=0, column=8)
+                      command=lambda: self.run_snapshot()).grid(row=0, column=8)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -651,12 +693,12 @@ class MainProgram(framework.Framework):
             current_directory = Path.cwd()
             # path to snapshots folder
             snap_dir_path = current_directory / "snapshots"
-            print(snap_dir_path)
 
-            # # # Create directory if not exists
-            snap_dir_path.mkdir(exist_ok=True)
             # path to snapshot file
             path_to_file = snap_dir_path / "snapshot_3.txt"
+
+            # create directory if not exists
+            snap_dir_path.mkdir(exist_ok=True)
             # write to file
             path_to_file.write_text(str(my_dict))
 
@@ -670,23 +712,25 @@ class MainProgram(framework.Framework):
         # put data from file to list
         details = ast.literal_eval(text)
 
-        # rewrite variables
-        # threads colors array
+        # # rewrite variables
+        # # threads colors array
         self.colors_list = details['threads_colors']
 
         # number of threads
         # change number in Spinbox
         self.threads.set(details['threads_num'])
+
         # change "threads_start_num" variable
         self.threads_start_num = details['threads_num']
-
+        #
         # number of rows
-        # change number in Spinbox
-        self.rows.set(details['rows_num'])
         # change "rows_num" variable
+        # change number in Spinbox
+
+        self.rows.set(details['rows_num'])
         self.rows_num = details['rows_num']
 
-        # change knots array to new array
+        # # change knots array to new array
         self.main_array = details['knots_array']
 
         # change threads colors array
@@ -695,17 +739,30 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
-        # draw canvas
-        self.canvas_lf.delete('all')
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
         self.draw_left_num_bar()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
-
-
-
 
     # SHOW/HIDE ROWS NUMBERS
     def draw_left_num_bar(self):
@@ -798,6 +855,7 @@ class MainProgram(framework.Framework):
             self.put_buttons()
 
     # DRAW THREADS CENTER
+    # little black line between color picker and threads, depend on threads number
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
             center = self.threads.get() // 2
@@ -848,7 +906,7 @@ class MainProgram(framework.Framework):
                 half_colors_2.pop()
                 self.colors_list = half_colors_1 + half_colors_2
 
-
+    # change color of each thread in every row and column depend on main knots array
     def threads_colors_array_handler(self):
         # Clear threads_colors_array if not empty
         self.threads_colors_array = []
@@ -881,8 +939,8 @@ class MainProgram(framework.Framework):
                             self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][(column * 2) + 2]
                             self.threads_colors_array[k][(column * 2) + 2] = self.threads_colors_array[row][(column * 2) + 1]
 
-    # TOP BAR BUTTONS FUNCTIONS
 
+    # TOP BAR BUTTONS COMMANDS HANDLER
     def selected_tool_bar_item(self, i):
         self.selected_toolbar_func_index = i
         self.execute_method()
@@ -891,6 +949,8 @@ class MainProgram(framework.Framework):
         fnc = getattr(self, self.tool_bar_functions[self.selected_toolbar_func_index])
         fnc()
 
+
+    # ADD/DROP THREADS FROM LEFT AND RIGHT
     def add_two_thread_from_left(self):
         thn_after_click = self.threads.get() + 2
         self.threads.set(thn_after_click)
@@ -913,7 +973,6 @@ class MainProgram(framework.Framework):
 
         self.threads_colors_array_handler()
         self.canvas_lf.delete('cvch')
-        self.threads_colors_array_handler()
         self.color_picker_pad()
         self.draw_center_of_threads()
         self.draw_threads()
@@ -933,7 +992,8 @@ class MainProgram(framework.Framework):
         self.threads_start_num = thn_after_click
         self.threads_colors_array_handler()
         self.canvas_lf.delete('cvch')
-        self.threads_colors_array_handler()
+        self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
@@ -1021,8 +1081,122 @@ class MainProgram(framework.Framework):
         self.threads_start_num = thn_after_click
         self.threads_colors_array_handler()
         self.canvas_lf.delete('cvch')
-        self.threads_colors_array_handler()
         self.color_picker_pad()
+        self.draw_center_of_threads()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+
+
+    # ADD/DROP ROWS FROM TOP AND BOTTOM
+    def add_rows_top(self):
+        # Take rows value and add 2
+        rows_value = self.rows.get()
+        new_rows_value = rows_value + 2
+
+        # set value in spinbox to new value
+        self.rows.set(new_rows_value)
+        # change rows_num variable to new value
+        self.rows_num = new_rows_value
+
+        # Create empty array, rows 2 and columns first row == threads number // 2,
+        #                                        second row == (threads number - 1) // 2; (to catch not even number of
+        #                                                                                                      threads)
+        new_array = []
+        for row in range(2):
+            new_array.append([])
+            if row % 2 == 0:
+                for column in range(self.threads.get() // 2):
+                    new_array[row].append(0)
+            else:
+                for column in range((self.threads.get() - 1) // 2):
+                    new_array[row].append(0)
+
+        # Insert new array in start of old array
+        self.main_array = new_array + self.main_array
+
+        # change threads color in every row and column depend on new values
+        self.threads_colors_array_handler()
+
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
+        # self.left_frame = tk.Frame(self.root,
+        #                            width=self.monitor_width,
+        #                            # for scrolling to be visible
+        #                            height=self.monitor_height,
+        #                            bg=self.main_bg_color)
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_center_of_threads()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
+
+    def drop_rows_top(self):
+        if self.rows.get() < 11:
+            return
+
+        # get value from spinbox window
+        rows_value = self.rows.get()
+        new_rows_value = rows_value - 2
+
+        # set (value in spinbox) - 2
+        self.rows.set(new_rows_value)
+        # set new value to variable "rows_num"
+        self.rows_num = new_rows_value
+
+        # get rid of 2 last rows
+        self.main_array = self.main_array[2:]
+
+        # change threads colors in every row and column
+        self.threads_colors_array_handler()
+
+        # for scrolling work correctly app needs to redraw
+        # destroy current left_frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
+        # self.left_frame = tk.Frame(self.root,
+        #                            width=self.monitor_width,
+        #                            # for scrolling to be visible
+        #                            height=self.monitor_height,
+        #                            bg=self.main_bg_color)
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
@@ -1030,16 +1204,19 @@ class MainProgram(framework.Framework):
     def add_drop_rows_bottom(self):
         # get value from spinbox
         rows_after_click = self.rows.get()
-        if rows_after_click < 30:
+        if rows_after_click < 10:
             return
-
 
         # For adding
         if rows_after_click > self.rows_num:
-            add_rows_num = rows_after_click - self.rows_num
-            print(add_rows_num)
 
+            # how much rows needs to add?
+            add_rows_num = rows_after_click - self.rows_num
+
+            # create empty array
             add_array = []
+
+            # if user set in spinbox window number that more than 1
             if add_rows_num > 1:
                 for row in range(add_rows_num):
                     add_array.append([])
@@ -1056,7 +1233,7 @@ class MainProgram(framework.Framework):
                     self.main_array = self.main_array + add_array.reverse()
                 self.rows_num = rows_after_click
 
-
+            # if only 1 row was added
             if add_rows_num == 1:
                 for row in range(2):
                     add_array.append([])
@@ -1075,82 +1252,53 @@ class MainProgram(framework.Framework):
 
         # For rows dropping
         if rows_after_click < self.rows_num:
+            # how much to drop?
             drop_rows_num = self.rows_num - rows_after_click
+
+            # create loop and drop
             for i in range(drop_rows_num):
                 self.main_array.pop()
             self.rows_num = rows_after_click
 
-        for widgets in self.root.winfo_children():
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
             widgets.destroy()
 
-        self.main_window()
-        self.on_check()
-        self.on_check_1()
-        self.on_check_2()
-        self.on_check_3()
-        self.threads_colors_array_handler()
+        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
+        # self.left_frame = tk.Frame(self.root,
+        #                            width=self.monitor_width,
+        #                            # for scrolling to be visible
+        #                            height=self.monitor_height,
+        #                            bg=self.main_bg_color)
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
         self.draw_left_num_bar()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        self.draw_center_of_threads()
-        self.create_menu()
 
-    def add_rows_top(self):
 
-        # Take rows value and add 2
-        rows_value = self.rows.get()
-        new_rows_value = rows_value + 2
-        self.rows.set(new_rows_value)
-        self.rows_num = new_rows_value
-
-        # Create empty array
-        new_array = []
-        for row in range(2):
-            new_array.append([])
-            if row % 2 == 0:
-                for column in range(self.threads.get() // 2):
-                    new_array[row].append(0)
-            else:
-                for column in range((self.threads.get() - 1) // 2):
-                    new_array[row].append(0)
-
-        # Insert new array in start of old array
-        self.main_array = new_array + self.main_array
-
-        self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
-        self.color_picker_pad()
-        self.draw_threads()
-        self.draw_knots()
-        self.put_buttons()
-        self.draw_center_of_threads()
-
-    def drop_rows_top(self):
-        if self.rows.get() < 31:
-            return
-
-        # Take rows value and add 2
-        rows_value = self.rows.get()
-        new_rows_value = rows_value - 2
-        self.rows.set(new_rows_value)
-        self.rows_num = new_rows_value
-
-        self.main_array = self.main_array[2:]
-
-        self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
-        self.draw_left_num_bar()
-        self.color_picker_pad()
-        self.draw_threads()
-        self.draw_knots()
-        self.put_buttons()
-        self.draw_center_of_threads()
-
+    # CHANGE ALL COLORS -> TWO COLORS and ALL EVEN ROWS KNOTS VALUE == 4 and NOT EVEN == 2
     def two_colors_pattern(self):
+
+        # empty main array
         self.main_array = []
+        # create new main array
         for row in range(self.rows.get()):
             self.main_array.append([])
             if row % 2 == 0:
@@ -1160,27 +1308,36 @@ class MainProgram(framework.Framework):
                 for column in range((self.threads.get() - 1) // 2):
                     self.main_array[row].append(2)
 
-        self.colors_list = []
-
+        # take random color from my_colors array
         half_colors_1 = my_colors[random.randint(0, 99)]
         half_colors_2 = my_colors[random.randint(0, 99)]
-        main_half_colors_list = []
 
+        # create new array which holds new values
+        main_half_colors_list = []
+        # put values
         for z in range(self.threads_start_num):
             if z % 2 == 0:
                 main_half_colors_list.append(half_colors_1)
             if z % 2 != 0:
                 main_half_colors_list.append(half_colors_2)
 
+        # empty colors list
+        self.colors_list = []
+
+        # set to new values
         self.colors_list = main_half_colors_list
 
         # redraw canvas
         self.canvas_lf.delete('cvch')
         self.threads_colors_array_handler()
         self.color_picker_pad()
+        self.draw_center_of_threads()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
+
+
+
 
     # DRAWING
     def draw_threads(self):
@@ -1265,6 +1422,8 @@ class MainProgram(framework.Framework):
                     else:
                         knots.Knot0(i, (j * 2) + 1, self.canvas_lf)
 
+
+
     # KNOTS BUTTONS
     def put_buttons(self):
         button_rect = []
@@ -1316,15 +1475,11 @@ class MainProgram(framework.Framework):
     def button_middle_clicked(self, i, j):
         self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
         self.main_array[i][j] = 0
-        self.threads_colors_array_handler()
 
         self.threads_colors_array_handler()
-        # self.draw_left_num_bar()
-        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        # self.draw_center_of_threads()
 
     def button_left_clicked(self, i, j):
         self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
@@ -1346,12 +1501,10 @@ class MainProgram(framework.Framework):
             self.main_array[i][j] += 1
 
         self.threads_colors_array_handler()
-        # self.draw_left_num_bar()
-        # self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-        # self.draw_center_of_threads()
+
 
     # TOP MENU
     def create_menu(self):
@@ -1433,57 +1586,91 @@ class MainProgram(framework.Framework):
             img.save(file_path)
 
     def save_pattern(self):
-        my_dict = {'colors': self.colors_list,
-                   'knots': self.main_array,
-                   'threads': self.threads_colors_array,
-                   'rows_num': self.rows_num,
-                   'threads_start_num': self.threads_start_num}
+        # create dictionary
+        my_dict = {'threads_colors': self.colors_list,
+                   'threads_num': self.threads.get(),
+                   'rows_num': self.rows.get(),
+                   'knots_array': self.main_array,
+                   'threads_colors_array': self.threads_colors_array,
+                   'rows_number_hidden': self.hidden}
 
+        # file save dialog
         filename = asksaveasfile(initialfile='my_bracelet.knw', defaultextension=".knw",
                                  filetypes=[("All Files", "*.*"), ("Patterns", "*.knw")])
+        # if decided to save
         if filename:
             file_path = Path(filename.name)
+            # write
             file_path.write_text(str(my_dict))
 
     def open_pattern(self):
-
+        # open file dialog
         filename = askopenfilename(title='Open a file', initialdir='/', filetypes=[('text files', '*.knw'),
                                                                                    ('All files', '*.*')])
         if not filename:
             return
 
+        # if decided to open
         if filename:
             file_path = Path(filename)
+
             # read data from file
             data = file_path.read_text()
 
-            # update values
+            # put data from file to list
             details = ast.literal_eval(data)
-            # rewrite variables
-            self.threads.set(details['threads_start_num'])
-            self.rows.set(details['rows_num'])
-            self.colors_list = details['colors']
-            self.main_array = details['knots']
-            self.threads_colors_array = details['threads']
-            self.rows_num = details['rows_num']
-            self.threads_start_num = details['threads_start_num']
 
-            for widgets in self.root.winfo_children():
+            # # rewrite variables
+            # # threads colors array
+            self.colors_list = details['threads_colors']
+
+            # number of threads
+            # change number in Spinbox
+            self.threads.set(details['threads_num'])
+
+            # change "threads_start_num" variable
+            self.threads_start_num = details['threads_num']
+            #
+            # number of rows
+            # change "rows_num" variable
+            # change number in Spinbox
+
+            self.rows.set(details['rows_num'])
+            self.rows_num = details['rows_num']
+
+            # # change knots array to new array
+            self.main_array = details['knots_array']
+
+            # change threads colors array
+            self.threads_colors_array = details['threads_colors_array']
+
+            # show/hide rows numbers bar
+            self.hidden = details['rows_number_hidden']
+
+            # for scrolling work correctly app needs to redraw
+            # destroy current left frame
+            for widgets in self.left_frame.winfo_children():
                 widgets.destroy()
 
-            self.main_window()
-            self.on_check()
-            self.on_check_1()
-            self.on_check_2()
-            self.on_check_3()
-            self.threads_colors_array_handler()
+            self.canvas_lf = tk.Canvas(self.left_frame,
+                                       width=self.monitor_width,
+                                       height=self.monitor_height,
+                                       bg=self.main_bg_color,
+                                       scrollregion=(0, 0, 500, self.rows_num * 41))
+
+            self.scrollbar = tk.Scrollbar(self.left_frame)
+            self.scrollbar.pack(side="right", fill="y")
+            self.scrollbar.config(command=self.canvas_lf.yview)
+            self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+            self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+            self.left_frame.pack(fill=tk.X, padx=5, pady=5)
             self.draw_left_num_bar()
             self.color_picker_pad()
+            self.draw_center_of_threads()
             self.draw_threads()
             self.draw_knots()
             self.put_buttons()
-            self.draw_center_of_threads()
-            self.create_menu()
 
     def new_pattern(self):
 
@@ -1499,16 +1686,19 @@ class MainProgram(framework.Framework):
         self.put_buttons()
         self.draw_center_of_threads()
 
-    # Ok
+    # if user close app from main menu, folder "/snapshots" removed  recursively (with all files in it)
+    # if user close app by clicking on red "X" in right top, function "exit_handler()" used in "main"
     def exit_app(self):
         # current directory
         current_directory = Path.cwd()
+
         # path to snapshots folder
         snap_dir_path = current_directory / "snapshots"
 
-        # # # Drop directory
+        # drop directory
         shutil.rmtree(snap_dir_path)
 
+        # close app
         self.root.destroy()
 
     def test_save(self):
@@ -1578,7 +1768,7 @@ def main():
     root.iconbitmap(logo_file)
 
     # root.state('zoomed')
-    root.geometry('800x700')
+    root.geometry('1200x700')
 
     MainProgram(root)
 
