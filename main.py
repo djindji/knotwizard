@@ -139,6 +139,7 @@ class MainProgram(framework.Framework):
         self.menubar = tk.Menu()
         self.canvas = tk.Canvas()
 
+        self.scrollbar = tk.Scrollbar
         self.window = tk.Frame
         self.top_frame = tk.Frame
         self.snp_frame = tk.Frame
@@ -1673,18 +1674,38 @@ class MainProgram(framework.Framework):
             self.put_buttons()
 
     def new_pattern(self):
+        self.threads.set(self.threads_start_num)
+        self.rows.set(self.rows_num)
 
-        self.main_array = []
+
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
+
         self.create_main_array()
-
+        self.colors()
         self.threads_colors_array_handler()
-        self.canvas_lf.delete('all')
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
         self.draw_center_of_threads()
+        self.create_menu()
 
     # if user close app from main menu, folder "/snapshots" removed  recursively (with all files in it)
     # if user close app by clicking on red "X" in right top, function "exit_handler()" used in "main"
