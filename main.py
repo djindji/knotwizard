@@ -1,5 +1,5 @@
 # import necessary libraries
-
+import copy
 # # # Seaborn python library take too much place and installs Matplot, Pandas and other libraries.
 # Too much size when .exe file created.
 # decided to use ready list with 100 different colors from "reversed(sns.color_palette("husl", 100).as_hex())"
@@ -47,7 +47,8 @@ class MainProgram(framework.Framework):
                           "drop_two_thread_from_left",
                           "add_rows_top",
                           "drop_rows_top",
-                          "two_colors_pattern")
+                          "two_colors_pattern",
+                          "mirror_pattern_array")
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 10
@@ -183,7 +184,7 @@ class MainProgram(framework.Framework):
         # pass to icons images
         icon_path = Path.cwd() / 'icons'
         # Create tuple with icons images names
-        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors')
+        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors', 'mirror_pattern')
 
         # put buttons on top frame and take images for buttons from '/icons' folder
         for i, icon in enumerate(icons):
@@ -245,7 +246,7 @@ class MainProgram(framework.Framework):
                 self.rows.set(self.rows_num)
                 # create spinbox
                 row_widget = tk.Spinbox(self.top_frame,
-                                        from_=30, to=200, width=3,
+                                        from_=1, to=200, width=3,
                                         textvariable=self.rows,
                                         font=("Arial", 26, 'bold'),
                                         foreground=self.main_bg_color,
@@ -260,6 +261,13 @@ class MainProgram(framework.Framework):
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=60)
+
+            if i == 5:
+                tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
+                tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                     command=lambda i=i: self.selected_tool_bar_item(i))
+                tool_bar.image = tool_bar_icon
+                tool_bar.pack(side='left', padx=20)
 
 
         # snapshots area
@@ -768,7 +776,7 @@ class MainProgram(framework.Framework):
     # SHOW/HIDE ROWS NUMBERS
     def draw_left_num_bar(self):
         # the same height as 'self.canvas_lf' scroll-region height
-        num_bar_height = self.rows.get() * 41
+        num_bar_height = self.rows.get() * 50
 
         # create window for rows numbers (parent canvas_lf)
         self.canvas = tk.Canvas(self.canvas_lf, width=50, height=num_bar_height, bg=self.main_bg_color)
@@ -835,8 +843,10 @@ class MainProgram(framework.Framework):
     # COLOR PICKER
     def color_picker_pad(self):
         for i in range(self.threads.get()):
-            line_bg = self.canvas_lf.create_line((20 * i) + 70, 3, (20 * i) + 70, 21, fill='grey', width=14)
-            line = self.canvas_lf.create_line((20 * i) + 70, 4, (20 * i) + 70, 20, fill=self.colors_list[i], width=10)
+            line_bg = self.canvas_lf.create_line((20 * i) + 70, 3, (20 * i) + 70, 21,
+                                                 fill='grey', width=14, tags='cvch')
+            line = self.canvas_lf.create_line((20 * i) + 70, 4, (20 * i) + 70, 20,
+                                              fill=self.colors_list[i], width=10, tags='cvch')
             self.canvas_lf.tag_bind(line, '<Button-1>', lambda event, i=i: self.color_picker(i))
 
     def color_picker(self,  i):
@@ -860,11 +870,13 @@ class MainProgram(framework.Framework):
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 60, 38, (20 * center) + 60, 48], fill='grey', width=2)
+            self.canvas_lf.create_line([(20 * center) + 60, 38, (20 * center) + 60, 48],
+                                       fill='grey', width=2, tags='cvch')
 
         if self.threads.get() % 2 != 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 48], fill='grey', width=2)
+            self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 48],
+                                       fill='grey', width=2, tags='cvch')
 
     # MAIN KNOTS ARRAY
     def create_main_array(self):
@@ -900,7 +912,7 @@ class MainProgram(framework.Framework):
 
         else:
             half_colors_1 = []
-            for z in range(self.threads_start_num // 2):
+            for z in range(self.threads_start_num - 1 // 2):
                 random_number = random.randint(0, 99)
                 half_colors_1.append(my_colors[random_number])
                 half_colors_2 = half_colors_1[::-1]
@@ -1205,7 +1217,7 @@ class MainProgram(framework.Framework):
     def add_drop_rows_bottom(self):
         # get value from spinbox
         rows_after_click = self.rows.get()
-        if rows_after_click < 10:
+        if rows_after_click < 1:
             return
 
         # For adding
@@ -1266,12 +1278,6 @@ class MainProgram(framework.Framework):
         for widgets in self.left_frame.winfo_children():
             widgets.destroy()
 
-        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
-        # self.left_frame = tk.Frame(self.root,
-        #                            width=self.monitor_width,
-        #                            # for scrolling to be visible
-        #                            height=self.monitor_height,
-        #                            bg=self.main_bg_color)
 
         self.canvas_lf = tk.Canvas(self.left_frame,
                                    width=self.monitor_width,
@@ -1337,6 +1343,71 @@ class MainProgram(framework.Framework):
         self.draw_knots()
         self.put_buttons()
 
+    # DUPLICATE KNOTS
+    def mirror_pattern_array(self):
+
+        def check(num):
+            if num == 1:
+                return 3
+            elif num == 3:
+                return 1
+            else:
+                return num
+
+        new_array = [[check(j) for j in i] for i in copy.deepcopy(self.main_array)]
+        print(new_array)
+
+        new_array.pop()
+
+        def check_1(num):
+            if num == 1:
+                return 2
+            elif num == 3:
+                return 4
+            else:
+                return num
+
+        self.main_array[-1] = [check_1(j) for j in self.main_array[-1]]
+
+        self.main_array = self.main_array + new_array[::-1]
+
+        self.rows.set(len(self.main_array))
+        self.rows_num = len(self.main_array)
+
+        # change threads color in every row and column depend on new values
+        self.threads_colors_array_handler()
+
+        # for scrolling work correctly app needs to redraw
+        # destroy current left frame
+        for widgets in self.left_frame.winfo_children():
+            widgets.destroy()
+
+        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
+        # self.left_frame = tk.Frame(self.root,
+        #                            width=self.monitor_width,
+        #                            # for scrolling to be visible
+        #                            height=self.monitor_height,
+        #                            bg=self.main_bg_color)
+
+        self.canvas_lf = tk.Canvas(self.left_frame,
+                                   width=self.monitor_width,
+                                   height=self.monitor_height,
+                                   bg=self.main_bg_color,
+                                   scrollregion=(0, 0, 500, self.rows_num * 41))
+
+        self.scrollbar = tk.Scrollbar(self.left_frame)
+        self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.config(command=self.canvas_lf.yview)
+        self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+        self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+        self.left_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.draw_left_num_bar()
+        self.color_picker_pad()
+        self.draw_center_of_threads()
+        self.draw_threads()
+        self.draw_knots()
+        self.put_buttons()
 
 
 
@@ -1477,6 +1548,8 @@ class MainProgram(framework.Framework):
         self.canvas_lf.after(200, self.canvas_lf.delete('cvch'))
         self.main_array[i][j] = 0
 
+        self.draw_center_of_threads()
+        self.color_picker_pad()
         self.threads_colors_array_handler()
         self.draw_threads()
         self.draw_knots()
@@ -1489,6 +1562,8 @@ class MainProgram(framework.Framework):
         else:
             self.main_array[i][j] += 1
 
+        self.draw_center_of_threads()
+        self.color_picker_pad()
         self.threads_colors_array_handler()
         self.draw_threads()
         self.draw_knots()
@@ -1501,6 +1576,8 @@ class MainProgram(framework.Framework):
         else:
             self.main_array[i][j] += 1
 
+        self.draw_center_of_threads()
+        self.color_picker_pad()
         self.threads_colors_array_handler()
         self.draw_threads()
         self.draw_knots()
@@ -1528,35 +1605,113 @@ class MainProgram(framework.Framework):
         if new_bg:
             self.main_bg_color = new_bg
 
-            for widgets in self.root.winfo_children():
+            # for scrolling work correctly app needs to redraw
+            # destroy current left frame
+            for widgets in self.left_frame.winfo_children():
                 widgets.destroy()
 
-            self.main_window()
-            self.on_check()
-            self.on_check_1()
-            self.on_check_2()
-            self.on_check_3()
-            self.threads_colors_array_handler()
+            self.canvas_lf = tk.Canvas(self.left_frame,
+                                       width=self.monitor_width,
+                                       height=self.monitor_height,
+                                       bg=self.main_bg_color,
+                                       scrollregion=(0, 0, 500, self.rows_num * 41))
+
+            self.scrollbar = tk.Scrollbar(self.left_frame)
+            self.scrollbar.pack(side="right", fill="y")
+            self.scrollbar.config(command=self.canvas_lf.yview)
+            self.canvas_lf.config(yscrollcommand=self.scrollbar.set)
+            self.canvas_lf.pack(fill=tk.X, padx=5, pady=5)
+
+            self.left_frame.pack(fill=tk.X, padx=5, pady=5)
             self.draw_left_num_bar()
             self.color_picker_pad()
+            self.draw_center_of_threads()
             self.draw_threads()
             self.draw_knots()
             self.put_buttons()
-            self.draw_center_of_threads()
-            self.create_menu()
 
     def hide_top_bar(self):
         self.window.forget()
 
+    def on_check_without_save(self):
+        if self.checkCmd.get() == 0:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='1', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='disabled',
+                      relief='flat').grid(row=0, column=1)
+        if self.checkCmd.get() == 1:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='1', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='active',
+                      relief='raised',
+                      command=lambda: self.run_snapshot()).grid(row=0, column=1)
+
+        if self.checkCmd_1.get() == 0:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='2', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='disabled',
+                      relief='flat').grid(row=0, column=4)
+        if self.checkCmd_1.get() == 1:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='2', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='active',
+                      relief='raised',
+                      command=lambda: self.run_snapshot()).grid(row=0, column=4)
+
+        if self.checkCmd_2.get() == 0:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='3', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='disabled',
+                      relief='flat').grid(row=0, column=6)
+        if self.checkCmd_2.get() == 1:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='3', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='active',
+                      relief='raised',
+                      command=lambda: self.run_snapshot()).grid(row=0, column=6)
+
+        if self.checkCmd_3.get() == 0:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='4', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='disabled',
+                      relief='flat').grid(row=0, column=8)
+        if self.checkCmd_3.get() == 1:
+            tk.Button(self.snp_frame,
+                      font=("Arial", 18, 'bold'),
+                      text='4', bg='#bba5bc',
+                      foreground='white',
+                      width=3,
+                      state='active',
+                      relief='raised',
+                      command=lambda: self.run_snapshot()).grid(row=0, column=8)
+
     def show_top_bar(self):
-        self.window.forget()
+
         self.left_frame.forget()
 
         self.main_window()
-        self.on_check()
-        self.on_check_1()
-        self.on_check_2()
-        self.on_check_3()
+        self.on_check_without_save()
         self.threads_colors_array_handler()
         self.draw_left_num_bar()
         self.color_picker_pad()
@@ -1674,8 +1829,8 @@ class MainProgram(framework.Framework):
             self.put_buttons()
 
     def new_pattern(self):
-        self.threads.set(self.threads_start_num)
-        self.rows.set(self.rows_num)
+        self.threads.set(10)
+        self.rows.set(30)
 
 
         # for scrolling work correctly app needs to redraw
