@@ -51,7 +51,7 @@ class MainProgram(framework.Framework):
                           "mirror_pattern_array")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 10
+    threads_start_num = 11
     rows_num = 30
 
     # list of current app colors
@@ -870,13 +870,15 @@ class MainProgram(framework.Framework):
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 60, 38, (20 * center) + 60, 48],
+            self.canvas_lf.create_line([(18 * center) + 61, 38, (18 * center) + 61, 48],
+                                       fill='grey', width=2, tags='cvch')
+            self.canvas_lf.create_line([(18 * center) + 62, 38, (18 * center) + 62, 48],
                                        fill='grey', width=2, tags='cvch')
 
         if self.threads.get() % 2 != 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(20 * center) + 70, 38, (20 * center) + 70, 48],
-                                       fill='grey', width=2, tags='cvch')
+            self.canvas_lf.create_line([(18 * center) + 70, 38, (18 * center) + 70, 48],
+                                       fill='grey', width=3, tags='cvch')
 
     # MAIN KNOTS ARRAY
     def create_main_array(self):
@@ -1418,9 +1420,9 @@ class MainProgram(framework.Framework):
                 color_num = self.threads_colors_array[i][j]
                 color = self.colors_list[color_num]
 
-                self.canvas_lf.create_line((20 * j) + 70,
+                self.canvas_lf.create_line((18 * j) + 70,
                                            (38 * i) + 60,
-                                           (20 * j) + 70,
+                                           (18 * j) + 70,
                                            (38 * i) + 98,
                                            fill=color, width=3, tags='cvch')
 
@@ -1511,9 +1513,9 @@ class MainProgram(framework.Framework):
         for i in range(self.rows.get()):
             if i % 2 == 0:
                 for j in range(self.threads.get() // 2):
-                    button_rect[i][j] = self.canvas_lf.create_rectangle(((40 * j) + 68,
+                    button_rect[i][j] = self.canvas_lf.create_rectangle(((36 * j) + 68,
                                                                         (38 * i) + 60,
-                                                                        (40 * j) + 92,
+                                                                        (36 * j) + 92,
                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="", tags='cvch')
@@ -1529,9 +1531,9 @@ class MainProgram(framework.Framework):
         for i in range(self.rows.get()):
             if i % 2 != 0:
                 for j in range((self.threads.get() - 1) // 2):
-                    button_rect[i][j] = self.canvas_lf.create_rectangle(((40 * j) + 88,
+                    button_rect[i][j] = self.canvas_lf.create_rectangle(((36 * j) + 88,
                                                                         (38 * i) + 60,
-                                                                        (40 * j) + 112,
+                                                                        (36 * j) + 112,
                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="", tags='cvch')

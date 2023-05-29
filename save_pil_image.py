@@ -6,175 +6,154 @@ from pathlib import Path
 # For independents from any languages,
 # "/fonts/' folder created in app main directory with 'arial-unicode-ms.ttf' (22.7 mg) file inside
 # which will be used in every tk.Entry widgets for normal text in img saving
-entry_font_path = Path.cwd() / "fonts" / "arial-unicode-ms.ttf"
-entry_font = str(Path(r"{}".format(entry_font_path)))
-
-
+# entry_font_path = Path.cwd() / "fonts" / "arial-unicode-ms.ttf"
+# entry_font = str(Path(r"{}".format(entry_font_path)))
+entry_font = ImageFont.truetype('arial.ttf', size=16, encoding="uni")
+# padding from top depends on : how much "tk.Entry" widgets was filled
 noempty_entr_counter = 0
 
+
+
+
 def save_image_test(self):
-
-
+    # get dimensions and all children of "self.canvas_lf" tk.Canvas widget
     x1, y1, x2, y2 = self.canvas_lf.bbox('all')
+
+    # create dimensions for image
     w, h = x2 - x1 + 50, ((y2 - y1) // 2) + 200
+    # print("image dimensions", w, h)
+
+    # store the graphical representation of "self.canvas_lf" to file "Result.eps"
     self.canvas_lf.postscript(file="Result.eps", x=x1, y=y1, width=w, height=h, pagewidth=w, pageheight=h)
+
+    # read file "Result.eps"
     Image.open("Result.eps")
+
+    # create new object, set mode to "RGB", set dimensions and background color
     image1 = Image.new("RGB", (w, h), self.main_bg_color)
+
+    # draw to object
     draw = ImageDraw.Draw(image1)
-    print("save", w, h)
 
-    # Create Header
-    # 'CREATED BY'
-
-    # 'TEXT' 0
+    # # User info input area
+    # read tk.Entry widgets (self.myEntryBox_(0-12) if not empty and increase line_counter by 1
     if self.myEntryBox_0.get():
+        # text attributes
         draw.text((10, 10), self.myEntryBox_0.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
+        # increase line_counter by 1
         self.line_counter += 1
 
-
-    # 'TEXT' 1
     if self.myEntryBox_1.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_1.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-        print(self.line_counter)
-
-    # 'TEXT' 2
     if self.myEntryBox_2.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_2.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 3
     if self.myEntryBox_3.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_3.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 4
     if self.myEntryBox_4.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_4.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 5
     if self.myEntryBox_5.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_5.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 6
     if self.myEntryBox_6.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_6.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 7
     if self.myEntryBox_7.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_7.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 8
     if self.myEntryBox_8.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_8.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 9
     if self.myEntryBox_9.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_9.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 10
     if self.myEntryBox_10.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_10.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 11
     if self.myEntryBox_11.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_11.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
+                  font=entry_font)
         self.line_counter += 1
 
-
-    # 'TEXT' 12
     if self.myEntryBox_12.get():
         draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_12.get(), fill='#2C2C29', align="right",
-                  font=ImageFont.truetype(entry_font, size=10))
-        print(entry_font)
+                  font=entry_font)
         self.line_counter += 1
-        print(self.myEntryBox_12.get())
 
-    # 'LABEL'
+    # App info
+
     text = 'download pattern editor: knotwizard.com'
-
-    draw.text((10, 10 + (self.line_counter * 20)), text, fill='black', align="center",
-              font=ImageFont.truetype(entry_font, size=10))
-
-    # 'LABEL'
-    text = 'github.com/djindji/knotwizard  (Python 3.10)'
-
-    draw.text((10, (10 + (self.line_counter + 1) * 20)), text, fill='black', align="center",
-              font=ImageFont.truetype(entry_font, size=10))
-
-
-
+    draw.text((10, 10 + (self.line_counter * 20)), text, fill='black', align="center", font=entry_font)
     self.line_counter += 1
 
-    # Add Labels to rows in PIL
+    text_1 = 'github.com/djindji/knotwizard  (Python 3.10)'
+    draw.text((10, (10 + (self.line_counter + 1) * 20)), text_1, fill='black', align="center", font=entry_font)
+    self.line_counter += 1
+
+    # Draw rows numbers
     for i in range(self.rows.get()):
         label_row_pad = 30
         text = str(i + 1)
-        font = ImageFont.truetype(entry_font, 8)
+
         draw.text((label_row_pad, (10 + (self.line_counter * 20) + 117) + (i * 38)), text, fill='grey', align="right",
-                  font=font)
+                  font=entry_font)
 
     # Draw Color Picker boxes
-    for i in range(len(self.colors_list)):
+    for i in range(self.threads_start_num):
         draw.line(
-            [(20 * i) + 70, (10 + (self.line_counter * 20) + 50), (20 * i) + 70, (10 + (self.line_counter * 20) + 60)],
+            [(18 * i) + 70, ((self.line_counter * 18) + 60), (18 * i) + 70, ((self.line_counter * 18) + 70)],
             fill=self.colors_list[i],
             width=10)
 
-
-
-
-    # Draw Center Line
+    # Draw Center Line for even threads number
     if self.threads.get() % 2 == 0:
         center = self.threads.get() // 2
-        draw.line([(20 * center) + 60, (10 + (self.line_counter * 20) + 70), (20 * center) + 60,
-                   (10 + (self.line_counter * 20) + 75)], fill='grey', width=2)
+        draw.line([(18 * center) + 60, ((self.line_counter * 18) + 80),
+                   (18 * center) + 60, ((self.line_counter * 18) + 90)],
+                  fill='grey', width=2)
 
+    # Draw Center Line for not even threads number
     if self.threads.get() % 2 != 0:
         center = self.threads.get() // 2
-        draw.line([(20 * center) + 70, (10 + (self.line_counter * 20) + 70), (20 * center) + 70,
-                   (10 + (self.line_counter * 20) + 75)], fill='grey', width=2)
+        draw.line([(18 * center) + 70, ((self.line_counter * 18) + 80),
+                   (18 * center) + 70, ((self.line_counter * 18) + 90)],
+                  fill='grey', width=2)
 
     # Draw lines
     for i in range(self.rows.get()):
         for j in range(self.threads.get()):
             color_num = self.threads_colors_array[i][j]
             color = self.colors_list[color_num]
-            draw.line([(20 * j) + 70, (38 * i) + (10 + (self.line_counter * 20) + 100),
-                       (20 * j) + 70, (38 * i) + (10 + (self.line_counter * 20) + 138)],
-                      fill=color, width=2)
+            draw.line([(18 * j) + 70, (38 * i) + ((self.line_counter * 20) + 110),
+                       (18 * j) + 70, (38 * i) + ((self.line_counter * 20) + 148)],
+                      fill=color, width=4)
 
+    # create Classes for knots drawing
     class PilKnot1:
-
         def __init__(self, color, color_1, row_position, column_position, counter):
             self.color = color
             self.color_1 = color_1
@@ -184,29 +163,29 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((20 * self.column_position) + 65,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 104)),
-                          ((20 * self.column_position) + 95,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 134))]
+            oval_shape = [((18 * self.column_position) + 68,
+                           (self.row_position * 38) + (self.counter * 20) + 114),
+                          ((18 * self.column_position) + 92,
+                           (self.row_position * 38) + ((self.counter * 20) + 154))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((20 * self.column_position) + 69,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 109)),
-                          ((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130))]
+            line_shape = [((18 * self.column_position) + 71,
+                           (self.row_position * 38) + ((self.counter * 20) + 124)),
+                          ((18 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 146))]
             draw.line(line_shape, fill=self.color, width=5)
 
-            line_shape = [((20 * self.column_position) + 70,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-                          ((20 * self.column_position) + 70,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            draw.line(line_shape, fill=self.color_1, width=2)
-
-            line_shape = [((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-                          ((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            draw.line(line_shape, fill=self.color, width=2)
+            # line_shape = [((18 * self.column_position) + 70,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 140)),
+            #               ((18 * self.column_position) + 70,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 148))]
+            # draw.line(line_shape, fill=self.color_1, width=2)
+            #
+            # line_shape = [((18 * self.column_position) + 90,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 140)),
+            #               ((18 * self.column_position) + 90,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 148))]
+            # draw.line(line_shape, fill=self.color, width=2)
 
     class PilKnot2:
         def __init__(self, color, row_position, column_position, counter):
@@ -217,26 +196,25 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((20 * self.column_position) + 65,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 104)),
-                          ((20 * self.column_position) + 95,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 134))]
+            oval_shape = [((18 * self.column_position) + 68,
+                           (self.row_position * 38) + (self.counter * 20) + 114),
+                          ((18 * self.column_position) + 92,
+                           (self.row_position * 38) + ((self.counter * 20) + 154))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((20 * self.column_position) + 69,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 108)),
-                          ((20 * self.column_position) + 82,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 119))]
-            draw.line(line_shape, fill=self.color, width=4)
+            line_shape = [((18 * self.column_position) + 71,
+                           (self.row_position * 38) + ((self.counter * 20) + 120)),
+                          ((18 * self.column_position) + 86,
+                           (self.row_position * 38) + ((self.counter * 20) + 135))]
+            draw.line(line_shape, fill=self.color, width=6)
 
-            line_shape = [((20 * self.column_position) + 83,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 120)),
-                          ((20 * self.column_position) + 70,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 131))]
-            draw.line(line_shape, fill=self.color, width=4)
+            line_shape = [((18 * self.column_position) + 86,
+                           (self.row_position * 38) + ((self.counter * 20) + 135)),
+                          ((18 * self.column_position) + 72,
+                           (self.row_position * 38) + ((self.counter * 20) + 149))]
+            draw.line(line_shape, fill=self.color, width=6)
 
     class PilKnot3:
-
         def __init__(self, color, color_1, row_position, column_position, counter):
             self.color = color
             self.color_1 = color_1
@@ -246,32 +224,37 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((20 * self.column_position) + 65,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 104)),
-                          ((20 * self.column_position) + 95,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 134))]
+            oval_shape = [((18 * self.column_position) + 68,
+                           (self.row_position * 38) + (self.counter * 20) + 114),
+                          ((18 * self.column_position) + 92,
+                           (self.row_position * 38) + ((self.counter * 20) + 154))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 109)),
-                          ((20 * self.column_position) + 69,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130))]
+            line_shape = [((18 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 124)),
+                          ((18 * self.column_position) + 71,
+                           (self.row_position * 38) + ((self.counter * 20) + 146))]
             draw.line(line_shape, fill=self.color, width=5)
 
-            line_shape = [((20 * self.column_position) + 70,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-                          ((20 * self.column_position) + 70,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            draw.line(line_shape, fill=self.color, width=2)
-
-            line_shape = [((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-                          ((20 * self.column_position) + 90,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            draw.line(line_shape, fill=self.color_1, width=2)
+            # line_shape = [((20 * self.column_position) + 90,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 109)),
+            #               ((20 * self.column_position) + 69,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130))]
+            # draw.line(line_shape, fill=self.color, width=5)
+            #
+            # line_shape = [((20 * self.column_position) + 70,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
+            #               ((20 * self.column_position) + 70,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
+            # draw.line(line_shape, fill=self.color, width=2)
+            #
+            # line_shape = [((20 * self.column_position) + 90,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
+            #               ((20 * self.column_position) + 90,
+            #                (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
+            # draw.line(line_shape, fill=self.color_1, width=2)
 
     class PilKnot4:
-
         def __init__(self, color, row_position, column_position, counter):
             self.color = color
             self.row_position = row_position
@@ -280,24 +263,23 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((20 * self.column_position) + 65,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 104)),
-                          ((20 * self.column_position) + 95,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 134))]
+            oval_shape = [((18 * self.column_position) + 68,
+                           (self.row_position * 38) + (self.counter * 20) + 114),
+                          ((18 * self.column_position) + 92,
+                           (self.row_position * 38) + ((self.counter * 20) + 154))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((20 * self.column_position) + 91,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 108)),
-                          ((20 * self.column_position) + 79,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 119))]
-            draw.line(line_shape, fill=self.color, width=5)
+            line_shape = [((18 * self.column_position) + 86,
+                           (self.row_position * 38) + ((self.counter * 20) + 120)),
+                          ((18 * self.column_position) + 71,
+                           (self.row_position * 38) + ((self.counter * 20) + 135))]
+            draw.line(line_shape, fill=self.color, width=6)
 
-            line_shape = [((20 * self.column_position) + 79,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 118)),
-                          ((20 * self.column_position) + 91,
-                           (self.row_position * 38) + (10 + (self.counter * 20) + 131))]
-
-            draw.line(line_shape, fill=self.color, width=5)
+            line_shape = [((18 * self.column_position) + 72,
+                           (self.row_position * 38) + ((self.counter * 20) + 135)),
+                          ((18 * self.column_position) + 86,
+                           (self.row_position * 38) + ((self.counter * 20) + 149))]
+            draw.line(line_shape, fill=self.color, width=6)
 
     # draw knots
     for i in range(len(self.main_array)):
@@ -363,15 +345,18 @@ def save_image_test(self):
                     color = self.colors_list[color_num]
                     PilKnot4(color, i, (j * 2) + 1, self.line_counter)
 
-    # save frame image
+    # file save open dialog
     file = asksaveasfile(mode='w', initialfile='my_bracelet.png', defaultextension=".png",
                          filetypes=(("PNG file", "*.png"), ("GIF file", "*.gif"), ("JPG file", "*.jpg"),
                                     ("BMP file", "*.bmp"), ("All Files", "*.*")))
 
-    # save image to the input file name
+    # save image object to the file
     if file:
         file_path = Path(file.name)
-        image1.save(file_path)
+        image1.save(file_path, quality='keep')
+
+
+
 
 
 
