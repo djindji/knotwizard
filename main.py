@@ -51,7 +51,7 @@ class MainProgram(framework.Framework):
                           "mirror_pattern_array")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 11
+    threads_start_num = 10
     rows_num = 30
 
     # list of current app colors
@@ -843,9 +843,9 @@ class MainProgram(framework.Framework):
     # COLOR PICKER
     def color_picker_pad(self):
         for i in range(self.threads.get()):
-            line_bg = self.canvas_lf.create_line((20 * i) + 70, 3, (20 * i) + 70, 21,
+            line_bg = self.canvas_lf.create_line((18 * i) + 70, 3, (18 * i) + 70, 21,
                                                  fill='grey', width=14, tags='cvch')
-            line = self.canvas_lf.create_line((20 * i) + 70, 4, (20 * i) + 70, 20,
+            line = self.canvas_lf.create_line((18 * i) + 70, 4, (18 * i) + 70, 20,
                                               fill=self.colors_list[i], width=10, tags='cvch')
             self.canvas_lf.tag_bind(line, '<Button-1>', lambda event, i=i: self.color_picker(i))
 
@@ -910,16 +910,6 @@ class MainProgram(framework.Framework):
             half_colors_2 = half_colors_1[::-1]
             self.colors_list = half_colors_1 + half_colors_2
 
-            print(self.colors_list)
-
-        else:
-            half_colors_1 = []
-            for z in range(self.threads_start_num - 1 // 2):
-                random_number = random.randint(0, 99)
-                half_colors_1.append(my_colors[random_number])
-                half_colors_2 = half_colors_1[::-1]
-                half_colors_2.pop()
-                self.colors_list = half_colors_1 + half_colors_2
 
     # change color of each thread in every row and column depend on main knots array
     def threads_colors_array_handler(self):
@@ -1424,7 +1414,7 @@ class MainProgram(framework.Framework):
                                            (38 * i) + 60,
                                            (18 * j) + 70,
                                            (38 * i) + 98,
-                                           fill=color, width=3, tags='cvch')
+                                           fill=color, width=4, tags='cvch')
 
     def draw_knots(self):
         for i in range(len(self.main_array)):
@@ -1591,12 +1581,12 @@ class MainProgram(framework.Framework):
         self.menubar = tk.Menu(self.root)
         menu_definitions = (
             'File- &New Pattern/ /self.new_pattern, Open Pattern/ /self.open_pattern, Save Pattern/ /self.save_pattern,\
-            sep, Save As Picture/ /self.test_save,Save For Printer/ /self.save_as_vector, sep, Exit/ /self.exit_app',
+            sep, Save As Picture/ /self.image_save, sep, Exit/ /self.exit_app',
 
             'View- &Hide Top/ /self.hide_top_bar, Show Top/ /self.show_top_bar,\
              Set Background/ /self.set_background_color ',
 
-            'About- &How to .../ /self.hide_top_bar, Github/ /self.hide_top_bar')
+            'About- &How to .../ /self.hide_top_bar, About Project/ /self.about_func')
 
         self.build_menu(menu_definitions)
 
@@ -1725,23 +1715,6 @@ class MainProgram(framework.Framework):
 
     def save_image(self):
         save_image_test(self)
-
-    def save_as_vector(self):
-        x1, y1, x2, y2 = self.canvas_lf.bbox('all')
-        w, h = x2 - x1, y2 - y1
-        print(w, h)
-
-        self.canvas_lf.postscript(file="Result.eps", x=x1, y=y1, width=w, height=h, pagewidth=w, pageheight=h)
-        img = Image.open("Result.eps")
-        img = img.resize((w // 2, h // 2), Image.LANCZOS)
-
-        file = asksaveasfile(mode='w', initialfile='my_bracelet.eps', defaultextension=".eps",
-                             filetypes=(("EPS file", "*.eps"), ("All Files", "*.*")))
-
-        # save image if user chose to save
-        if file:
-            file_path = Path(file.name)
-            img.save(file_path)
 
     def save_pattern(self):
         # create dictionary
@@ -1879,7 +1852,7 @@ class MainProgram(framework.Framework):
         # close app
         self.root.destroy()
 
-    def test_save(self):
+    def image_save(self):
 
         top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
         self.top.geometry("614x750")
@@ -1935,6 +1908,26 @@ class MainProgram(framework.Framework):
     def parent_func(self):
         self.save_image()
         self.top.destroy()
+
+    def about_func(self):
+        top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
+        self.top.geometry("600x600")
+        text_1 = '\n \n KnotWizard Project \n \n' \
+                 ' The idea of the project:\n create the best friendship bracelet pattern editor. \n \n'  \
+                 ' For the latest version or donations please visit:\n  knotwizard.com \n \n' \
+                 ' Application created in Python 3.10 \n \n'  \
+                 ' Open source code: github.com/djindji/knotwizard \n \n' \
+                 ' Version: 1.0\n \n' \
+                 ' Feel free to update or change.\n \n \n \n' \
+                 ' Special thanks to: \n' \
+                 '  Mihai Cătălin Teodosiu for Python Video Course and\n' \
+                 '  Bhaskar Chaudhary for understanding how Tkinter works.\n \n \n' \
+                 ' Kindest regards,\n' \
+                 '  Eduard Kruminsh'
+
+        text_window = tk.Text(top, width=600, height=600)
+        text_window.insert(tk.INSERT, text_1)
+        text_window.pack()
 
 
 def main():
