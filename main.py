@@ -484,7 +484,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot()).grid(row=0, column=4)
+                      command=lambda: self.run_snapshot_1()).grid(row=0, column=4)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -586,7 +586,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot()).grid(row=0, column=6)
+                      command=lambda: self.run_snapshot_2()).grid(row=0, column=6)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -688,7 +688,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='active',
                       relief='raised',
-                      command=lambda: self.run_snapshot()).grid(row=0, column=8)
+                      command=lambda: self.run_snapshot_3()).grid(row=0, column=8)
 
             # create dictionary
             my_dict = {'threads_colors': self.colors_list,
@@ -1763,8 +1763,8 @@ class MainProgram(framework.Framework):
         # open file dialog
         filename = askopenfilename(title='Open a file', initialdir='/', filetypes=[('text files', '*.knw'),
                                                                                    ('All files', '*.*')])
-        if not filename:
-            return
+        # if not filename:
+        #     return
 
         # if decided to open
         if filename:
