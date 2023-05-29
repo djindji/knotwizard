@@ -52,7 +52,7 @@ class MainProgram(framework.Framework):
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 10
-    rows_num = 30
+    rows_num = 14
 
     # list of current app colors
     colors_list = []
@@ -1586,7 +1586,7 @@ class MainProgram(framework.Framework):
             'View- &Hide Top/ /self.hide_top_bar, Show Top/ /self.show_top_bar,\
              Set Background/ /self.set_background_color ',
 
-            'About- &How to .../ /self.hide_top_bar, About Project/ /self.about_func')
+            'About- &How to .../ /self.help_func, About Project/ /self.about_func')
 
         self.build_menu(menu_definitions)
 
@@ -1928,6 +1928,18 @@ class MainProgram(framework.Framework):
         text_window = tk.Text(top, width=600, height=600)
         text_window.insert(tk.INSERT, text_1)
         text_window.pack()
+
+    def help_func(self):
+        top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
+        self.top.geometry("656x434")
+
+        bg_path = Path.cwd() / 'icons' / 'help.png'
+
+        tool_bar_icon = tk.PhotoImage(file=bg_path)
+
+        tool_bar = tk.Label(self.top, image=tool_bar_icon)
+        tool_bar.image = tool_bar_icon
+        tool_bar.pack()
 
 
 def main():
