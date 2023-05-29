@@ -24,10 +24,18 @@ class Knot1:
                                      (38 * self.row_position) + 98,
                                      fill=self.color_1, width=3, joinstyle=tk.ROUND, smooth=True, tags='cvch')
 
-        self.right_frame.create_oval((20 * self.column_position) + 65,
-                                     (self.row_position * 38) + 64,
-                                     (20 * self.column_position) + 95,
-                                     (self.row_position * 38) + 94,
+        # # circle
+        # self.right_frame.create_oval((20 * self.column_position) + 65,
+        #                              (self.row_position * 38) + 64,
+        #                              (20 * self.column_position) + 95,
+        #                              (self.row_position * 38) + 94,
+        #                              fill=self.bg_color, width=4, outline=self.color, tags='cvch')
+
+        # oval
+        self.right_frame.create_oval((20 * self.column_position) + 68,
+                                     (self.row_position * 38) + 59,
+                                     (20 * self.column_position) + 92,
+                                     (self.row_position * 38) + 99,
                                      fill=self.bg_color, width=4, outline=self.color, tags='cvch')
 
         self.right_frame.create_line((20 * self.column_position) + 69,
@@ -47,10 +55,18 @@ class Knot2:
         self.draw()
 
     def draw(self):
-        self.right_frame.create_oval((20 * self.column_position) + 65,
-                                     (self.row_position * 38) + 64,
-                                     (20 * self.column_position) + 95,
-                                     (self.row_position * 38) + 94,
+        # # circle
+        # self.right_frame.create_oval((20 * self.column_position) + 65,
+        #                              (self.row_position * 38) + 64,
+        #                              (20 * self.column_position) + 95,
+        #                              (self.row_position * 38) + 94,
+        #                              fill=self.bg_color, width=4, outline=self.color, tags='cvch')
+
+        # oval
+        self.right_frame.create_oval((20 * self.column_position) + 68,
+                                     (self.row_position * 38) + 59,
+                                     (20 * self.column_position) + 92,
+                                     (self.row_position * 38) + 99,
                                      fill=self.bg_color, width=4, outline=self.color, tags='cvch')
 
         self.right_frame.create_line((20 * self.column_position) + 72,
@@ -89,11 +105,19 @@ class Knot3:
                                      (38 * self.row_position) + 98,
                                      fill=self.color, width=3, joinstyle=tk.ROUND, smooth=True, tags='cvch')
 
-        self.right_frame.create_oval((20 * self.column_position) + 65,
-                                     (self.row_position * 38) + 64,
-                                     (20 * self.column_position) + 95,
-                                     (self.row_position * 38) + 94,
+        # oval
+        self.right_frame.create_oval((20 * self.column_position) + 68,
+                                     (self.row_position * 38) + 59,
+                                     (20 * self.column_position) + 92,
+                                     (self.row_position * 38) + 99,
                                      fill=self.bg_color, width=4, outline=self.color, tags='cvch')
+
+        # circle
+        # self.right_frame.create_oval((20 * self.column_position) + 65,
+        #                              (self.row_position * 38) + 64,
+        #                              (20 * self.column_position) + 95,
+        #                              (self.row_position * 38) + 94,
+        #                              fill=self.bg_color, width=4, outline=self.color, tags='cvch')
 
         self.right_frame.create_line((20 * self.column_position) + 90,
                                      (self.row_position * 38) + 69,
@@ -112,10 +136,18 @@ class Knot4:
         self.draw()
 
     def draw(self):
-        self.right_frame.create_oval((20 * self.column_position) + 65,
-                                     (self.row_position * 38) + 64,
-                                     (20 * self.column_position) + 95,
-                                     (self.row_position * 38) + 94,
+        # circle
+        # self.right_frame.create_oval((20 * self.column_position) + 65,
+        #                              (self.row_position * 38) + 64,
+        #                              (20 * self.column_position) + 95,
+        #                              (self.row_position * 38) + 94,
+        #                              fill=self.bg_color, width=4, outline=self.color, tags='cvch')
+
+        # oval
+        self.right_frame.create_oval((20 * self.column_position) + 68,
+                                     (self.row_position * 38) + 59,
+                                     (20 * self.column_position) + 92,
+                                     (self.row_position * 38) + 99,
                                      fill=self.bg_color, width=4, outline=self.color, tags='cvch')
 
         self.right_frame.create_line((20 * self.column_position) + 88,
