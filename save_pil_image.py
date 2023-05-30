@@ -20,7 +20,7 @@ def save_image_test(self):
     x1, y1, x2, y2 = self.canvas_lf.bbox('all')
 
     # create dimensions for image
-    w, h = x2 - x1 + 50, ((y2 - y1) // 2) + 200
+    w, h = x2 - x1 + 50, (self.rows_num * 41) + 400
     # print("image dimensions", w, h)
 
     # store the graphical representation of "self.canvas_lf" to file "Result.eps"
@@ -111,8 +111,8 @@ def save_image_test(self):
     self.line_counter += 1
 
     text_1 = 'github.com/djindji/knotwizard  (Python 3.10)'
-    draw.text((10, (10 + (self.line_counter + 1) * 20)), text_1, fill='black', align="center", font=entry_font)
-    self.line_counter += 1
+    draw.text((10, 10 + (self.line_counter * 20)), text_1, fill='black', align="center", font=entry_font)
+
 
     # Draw rows numbers
     for i in range(self.rows.get()):
@@ -125,22 +125,22 @@ def save_image_test(self):
     # Draw Color Picker boxes
     for i in range(self.threads_start_num):
         draw.line(
-            [(18 * i) + 70, ((self.line_counter * 18) + 60), (18 * i) + 70, ((self.line_counter * 18) + 70)],
+            [(16 * i) + 70, ((self.line_counter * 20) + 60), (16 * i) + 70, ((self.line_counter * 20) + 70)],
             fill=self.colors_list[i],
             width=10)
 
     # Draw Center Line for even threads number
     if self.threads.get() % 2 == 0:
         center = self.threads.get() // 2
-        draw.line([(18 * center) + 60, ((self.line_counter * 18) + 80),
-                   (18 * center) + 60, ((self.line_counter * 18) + 90)],
+        draw.line([(16 * center) + 60, ((self.line_counter * 20) + 80),
+                   (16 * center) + 60, ((self.line_counter * 20) + 90)],
                   fill='grey', width=2)
 
     # Draw Center Line for not even threads number
     if self.threads.get() % 2 != 0:
         center = self.threads.get() // 2
-        draw.line([(18 * center) + 70, ((self.line_counter * 18) + 80),
-                   (18 * center) + 70, ((self.line_counter * 18) + 90)],
+        draw.line([(16 * center) + 70, ((self.line_counter * 20) + 80),
+                   (16 * center) + 70, ((self.line_counter * 20) + 90)],
                   fill='grey', width=2)
 
     # Draw lines
@@ -148,8 +148,8 @@ def save_image_test(self):
         for j in range(self.threads.get()):
             color_num = self.threads_colors_array[i][j]
             color = self.colors_list[color_num]
-            draw.line([(18 * j) + 70, (38 * i) + ((self.line_counter * 20) + 110),
-                       (18 * j) + 70, (38 * i) + ((self.line_counter * 20) + 148)],
+            draw.line([(16 * j) + 70, (38 * i) + ((self.line_counter * 20) + 110),
+                       (16 * j) + 70, (38 * i) + ((self.line_counter * 20) + 148)],
                       fill=color, width=4)
 
     # create Classes for knots drawing
@@ -163,16 +163,16 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((18 * self.column_position) + 68,
+            oval_shape = [((16 * self.column_position) + 67,
                            (self.row_position * 38) + (self.counter * 20) + 114),
-                          ((18 * self.column_position) + 92,
-                           (self.row_position * 38) + ((self.counter * 20) + 154))]
+                          ((16 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 152))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((18 * self.column_position) + 71,
+            line_shape = [((16 * self.column_position) + 71,
                            (self.row_position * 38) + ((self.counter * 20) + 124)),
-                          ((18 * self.column_position) + 89,
-                           (self.row_position * 38) + ((self.counter * 20) + 146))]
+                          ((16 * self.column_position) + 87,
+                           (self.row_position * 38) + ((self.counter * 20) + 147))]
             draw.line(line_shape, fill=self.color, width=5)
 
             # line_shape = [((18 * self.column_position) + 70,
@@ -196,21 +196,21 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((18 * self.column_position) + 68,
+            oval_shape = [((16 * self.column_position) + 67,
                            (self.row_position * 38) + (self.counter * 20) + 114),
-                          ((18 * self.column_position) + 92,
-                           (self.row_position * 38) + ((self.counter * 20) + 154))]
+                          ((16 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 152))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((18 * self.column_position) + 71,
+            line_shape = [((16 * self.column_position) + 71,
                            (self.row_position * 38) + ((self.counter * 20) + 120)),
-                          ((18 * self.column_position) + 86,
+                          ((16 * self.column_position) + 86,
                            (self.row_position * 38) + ((self.counter * 20) + 135))]
             draw.line(line_shape, fill=self.color, width=6)
 
-            line_shape = [((18 * self.column_position) + 86,
+            line_shape = [((16 * self.column_position) + 86,
                            (self.row_position * 38) + ((self.counter * 20) + 135)),
-                          ((18 * self.column_position) + 72,
+                          ((16 * self.column_position) + 72,
                            (self.row_position * 38) + ((self.counter * 20) + 149))]
             draw.line(line_shape, fill=self.color, width=6)
 
@@ -224,16 +224,16 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((18 * self.column_position) + 68,
+            oval_shape = [((16 * self.column_position) + 68,
                            (self.row_position * 38) + (self.counter * 20) + 114),
-                          ((18 * self.column_position) + 92,
-                           (self.row_position * 38) + ((self.counter * 20) + 154))]
+                          ((16 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 152))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((18 * self.column_position) + 89,
+            line_shape = [((16 * self.column_position) + 87,
                            (self.row_position * 38) + ((self.counter * 20) + 124)),
-                          ((18 * self.column_position) + 71,
-                           (self.row_position * 38) + ((self.counter * 20) + 146))]
+                          ((16 * self.column_position) + 71,
+                           (self.row_position * 38) + ((self.counter * 20) + 147))]
             draw.line(line_shape, fill=self.color, width=5)
 
             # line_shape = [((20 * self.column_position) + 90,
@@ -263,21 +263,21 @@ def save_image_test(self):
             self.draw()
 
         def draw(self):
-            oval_shape = [((18 * self.column_position) + 68,
+            oval_shape = [((16 * self.column_position) + 67,
                            (self.row_position * 38) + (self.counter * 20) + 114),
-                          ((18 * self.column_position) + 92,
-                           (self.row_position * 38) + ((self.counter * 20) + 154))]
+                          ((16 * self.column_position) + 89,
+                           (self.row_position * 38) + ((self.counter * 20) + 152))]
             draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
 
-            line_shape = [((18 * self.column_position) + 86,
+            line_shape = [((16 * self.column_position) + 86,
                            (self.row_position * 38) + ((self.counter * 20) + 120)),
-                          ((18 * self.column_position) + 71,
+                          ((16 * self.column_position) + 71,
                            (self.row_position * 38) + ((self.counter * 20) + 135))]
             draw.line(line_shape, fill=self.color, width=6)
 
-            line_shape = [((18 * self.column_position) + 72,
+            line_shape = [((16 * self.column_position) + 72,
                            (self.row_position * 38) + ((self.counter * 20) + 135)),
-                          ((18 * self.column_position) + 86,
+                          ((16 * self.column_position) + 86,
                            (self.row_position * 38) + ((self.counter * 20) + 149))]
             draw.line(line_shape, fill=self.color, width=6)
 

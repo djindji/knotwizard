@@ -51,8 +51,8 @@ class MainProgram(framework.Framework):
                           "mirror_pattern_array")
 
     # For app to start we need threads and rows num to start knots array creation
-    threads_start_num = 10
-    rows_num = 14
+    threads_start_num = 18
+    rows_num = 30
 
     # list of current app colors
     colors_list = []
@@ -801,13 +801,13 @@ class MainProgram(framework.Framework):
                 if i % 2 == 0:
                     label_row = tk.Label(self.canvas,
                                          text=str(i + 1),
-                                         font=("Arial", 7, 'bold'),
+                                         font=("Arial", 8),
                                          bg=self.main_bg_color)
                     self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
                     label_row.config(fg='#6E6E68')
 
                 if i % 2 != 0:
-                    label_row = tk.Label(self.canvas, text=str(i + 1), font=("Arial", 7, "bold"), bg=self.main_bg_color)
+                    label_row = tk.Label(self.canvas, text=str(i + 1), font=("Arial", 8), bg=self.main_bg_color)
                     self.canvas.create_window(label_row_padding, (38 * i) + 88, anchor='se', window=label_row)
                     label_row.config(fg='#6E6E68')
 
@@ -843,9 +843,9 @@ class MainProgram(framework.Framework):
     # COLOR PICKER
     def color_picker_pad(self):
         for i in range(self.threads.get()):
-            line_bg = self.canvas_lf.create_line((18 * i) + 70, 3, (18 * i) + 70, 21,
+            line_bg = self.canvas_lf.create_line((16 * i) + 70, 3, (16 * i) + 70, 21,
                                                  fill='grey', width=14, tags='cvch')
-            line = self.canvas_lf.create_line((18 * i) + 70, 4, (18 * i) + 70, 20,
+            line = self.canvas_lf.create_line((16 * i) + 70, 4, (16 * i) + 70, 20,
                                               fill=self.colors_list[i], width=10, tags='cvch')
             self.canvas_lf.tag_bind(line, '<Button-1>', lambda event, i=i: self.color_picker(i))
 
@@ -870,14 +870,14 @@ class MainProgram(framework.Framework):
     def draw_center_of_threads(self):
         if self.threads.get() % 2 == 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(18 * center) + 61, 38, (18 * center) + 61, 48],
+            self.canvas_lf.create_line([(16 * center) + 61, 38, (16 * center) + 61, 48],
                                        fill='grey', width=2, tags='cvch')
-            self.canvas_lf.create_line([(18 * center) + 62, 38, (18 * center) + 62, 48],
+            self.canvas_lf.create_line([(16 * center) + 62, 38, (16 * center) + 62, 48],
                                        fill='grey', width=2, tags='cvch')
 
         if self.threads.get() % 2 != 0:
             center = self.threads.get() // 2
-            self.canvas_lf.create_line([(18 * center) + 70, 38, (18 * center) + 70, 48],
+            self.canvas_lf.create_line([(16 * center) + 70, 38, (16 * center) + 70, 48],
                                        fill='grey', width=3, tags='cvch')
 
     # MAIN KNOTS ARRAY
@@ -1287,6 +1287,8 @@ class MainProgram(framework.Framework):
         self.draw_left_num_bar()
         self.color_picker_pad()
         self.draw_center_of_threads()
+        # change threads color in every row and column depend on new values
+        self.threads_colors_array_handler()
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
@@ -1410,9 +1412,9 @@ class MainProgram(framework.Framework):
                 color_num = self.threads_colors_array[i][j]
                 color = self.colors_list[color_num]
 
-                self.canvas_lf.create_line((18 * j) + 70,
+                self.canvas_lf.create_line((16 * j) + 70,
                                            (38 * i) + 60,
-                                           (18 * j) + 70,
+                                           (16 * j) + 70,
                                            (38 * i) + 98,
                                            fill=color, width=4, tags='cvch')
 
@@ -1503,9 +1505,9 @@ class MainProgram(framework.Framework):
         for i in range(self.rows.get()):
             if i % 2 == 0:
                 for j in range(self.threads.get() // 2):
-                    button_rect[i][j] = self.canvas_lf.create_rectangle(((36 * j) + 68,
+                    button_rect[i][j] = self.canvas_lf.create_rectangle(((32 * j) + 67,
                                                                         (38 * i) + 60,
-                                                                        (36 * j) + 92,
+                                                                        (32 * j) + 89,
                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="", tags='cvch')
@@ -1521,9 +1523,9 @@ class MainProgram(framework.Framework):
         for i in range(self.rows.get()):
             if i % 2 != 0:
                 for j in range((self.threads.get() - 1) // 2):
-                    button_rect[i][j] = self.canvas_lf.create_rectangle(((36 * j) + 88,
+                    button_rect[i][j] = self.canvas_lf.create_rectangle(((32 * j) + 84,
                                                                         (38 * i) + 60,
-                                                                        (36 * j) + 112,
+                                                                        (32 * j) + 106,
                                                                         (38 * i) + 98),
                                                                         fill='',
                                                                         outline="", tags='cvch')
@@ -1738,8 +1740,8 @@ class MainProgram(framework.Framework):
         # open file dialog
         filename = askopenfilename(title='Open a file', initialdir='/', filetypes=[('text files', '*.knw'),
                                                                                    ('All files', '*.*')])
-        # if not filename:
-        #     return
+        if not filename:
+            return
 
         # if decided to open
         if filename:
@@ -1778,6 +1780,7 @@ class MainProgram(framework.Framework):
             # show/hide rows numbers bar
             self.hidden = details['rows_number_hidden']
 
+
             # for scrolling work correctly app needs to redraw
             # destroy current left frame
             for widgets in self.left_frame.winfo_children():
@@ -1804,15 +1807,19 @@ class MainProgram(framework.Framework):
             self.put_buttons()
 
     def new_pattern(self):
-        self.threads.set(10)
+        # set threads and rows in snipping tool windows to default values
+        self.threads.set(18)
+        self.threads_start_num = 18
         self.rows.set(30)
+        self.rows_num = 30
 
+        # for scrolling work correctly app needs to redraw left frame
 
-        # for scrolling work correctly app needs to redraw
-        # destroy current left frame
+        # destroy current left frame children objects
         for widgets in self.left_frame.winfo_children():
             widgets.destroy()
 
+        # create new objects
         self.canvas_lf = tk.Canvas(self.left_frame,
                                    width=self.monitor_width,
                                    height=self.monitor_height,
@@ -1917,7 +1924,7 @@ class MainProgram(framework.Framework):
                  ' For the latest version or donations please visit:\n  knotwizard.com \n \n' \
                  ' Application created in Python 3.10 \n \n'  \
                  ' Open source code: github.com/djindji/knotwizard \n \n' \
-                 ' Version: 1.0\n \n' \
+                 ' Version: beta 1.0\n \n' \
                  ' Feel free to update or change.\n \n \n \n' \
                  ' Special thanks to: \n' \
                  '  Mihai Cătălin Teodosiu for Python Video Course and\n' \
