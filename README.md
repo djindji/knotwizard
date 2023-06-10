@@ -1,4 +1,8 @@
-<img src="https://github.com/djindji/knotwizard/assets/85453169/bf77f1d8-3936-41e1-a869-7ec7439b3d33">
+
+
+=======
+![main](https://github.com/djindji/knotwizard/assets/85453169/ec586981-b4ff-4674-8dd7-35664639feeb)
+
 # Welcome to my project KNOTWIZARD!
 
 The motivation of this is project is to create
@@ -74,7 +78,7 @@ Run as Python app
 
 ## User interface
 
-<img src="https://github.com/djindji/knotwizard/assets/85453169/6d3f3775-209f-46b3-858d-08c8ca78fb7a">
+![help](https://github.com/djindji/knotwizard/assets/85453169/798fae15-9046-453c-9340-5a5372add3d9)
  
 
 ## Other
