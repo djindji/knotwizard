@@ -1,4 +1,4 @@
-
+![main](https://github.com/djindji/knotwizard/assets/85453169/bf77f1d8-3936-41e1-a869-7ec7439b3d33)
 # Welcome to my project KNOTWIZARD!
 
 The motivation of this is project is to create
