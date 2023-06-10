@@ -1,8 +1,4 @@
-
-
-=======
 ![main](https://github.com/djindji/knotwizard/assets/85453169/ec586981-b4ff-4674-8dd7-35664639feeb)
-
 # Welcome to my project KNOTWIZARD!
 
 The motivation of this is project is to create
@@ -79,14 +75,19 @@ Run as Python app
 ## User interface
 
 ![help](https://github.com/djindji/knotwizard/assets/85453169/798fae15-9046-453c-9340-5a5372add3d9)
- 
 
 ## Other
 - Licensed under the MIT license
 - Credits here!
-- You can also send me mails to knotwizard.app@gmail.com, but please, only do so if you want to talk to me privately.
 - Join the Discord server to discuss everything about app!
 - If KNOTWIZARD really brightens up your day, you can send me a small gift (paypal)
 
 Disclaimer:
 - As per the MIT license, I assume no liability for any damage to you or any other person or equipment.
+
+
+
+
+
+
+
