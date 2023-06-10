@@ -74,7 +74,7 @@ Run as Python app
 
 ## User interface
 
--PIC
+![help](https://github.com/djindji/knotwizard/assets/85453169/6d3f3775-209f-46b3-858d-08c8ca78fb7a)
 
 ## Other
 - Licensed under the MIT license
