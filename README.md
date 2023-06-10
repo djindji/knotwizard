@@ -1,4 +1,4 @@
-
+<img src="https://github.com/djindji/knotwizard/assets/85453169/bf77f1d8-3936-41e1-a869-7ec7439b3d33">
 # Welcome to my project KNOTWIZARD!
 
 The motivation of this is project is to create
@@ -74,7 +74,8 @@ Run as Python app
 
 ## User interface
 
--PIC
+<img src="https://github.com/djindji/knotwizard/assets/85453169/6d3f3775-209f-46b3-858d-08c8ca78fb7a">
+ 
 
 ## Other
 - Licensed under the MIT license
@@ -85,5 +86,3 @@ Run as Python app
 
 Disclaimer:
 - As per the MIT license, I assume no liability for any damage to you or any other person or equipment.
-
-
