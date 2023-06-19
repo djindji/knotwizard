@@ -30,8 +30,8 @@ Pattern print
 
 - save to GIF, PNG files
 - pattern optimized for save (width and height depends on pattern dimensions) 
-- save with visibale text attributes 
-- change background color
+- save pattern image with text attributes 
+- change pattern image background color
 
 Pattern 
 
@@ -39,17 +39,17 @@ Pattern
 
 
 
-## Roadmap
+## Roadmap 
 
 - Rotate pattern 90 degrees (horizontaly)
 
 - Implement "Conways’s Game Of Life" and ather mathematical functions for pattern creation
 
-- Connect to ML (in a core a pattern is 2d array with 5 posabilities (Base 5))
+- Connect to ML (in a core a pattern is 2d array with Base 5)
 - Create Plugin or separate app to convert image to pattern (like "handwritten text recognition" Python projects)  
 - Create pattern to image Plugin or separate app 
 - add posability (buttons) to change all not knoted threads to knot 1, 2, 3  or 4 (espesialy useful for 2 colors patterns)
-- add posability (buttons) to reflect design horizontaly, verticaly and 45 degrees
+- add posability (buttons) to reflect design horizontaly and 45 degrees
 
 ## Tech Stack
 
@@ -70,24 +70,25 @@ Run as Python app
 
 ## Quick start guide and tutorial
 
-- See the tutorial on our official site! (knotwizard.com) to help you get your new project up and running!
+- See the tutorial on our official site! [knotwizard](https://knotwizard.com) to help you get your new project up and running!
 
 ## User interface
 
 ![help](https://github.com/djindji/knotwizard/assets/85453169/798fae15-9046-453c-9340-5a5372add3d9)
 
 ## Other
-- Licensed under the MIT license
-- Credits here!
-- Join the Discord server to discuss everything about app!
-- If KNOTWIZARD really brightens up your day, you can send me a small gift (paypal)
 
 Disclaimer:
 - As per the MIT license, I assume no liability for any damage to you or any other person or equipment.
 
+## Credits
+- THANKS to Mihai Cătălin Teodosiu for Python Video Courses
 
+- THANKS to Bhaskar Chaudhary for time saving and understanding how Tkinter works.
+For main menu framework script from chapter 6 was used
 
+[Tkinter-GUI-Application-Development-Blueprints-Second-Edition](https://github.com/PacktPublishing/Tkinter-GUI-Application-Development-Blueprints-Second-Edition/tree/master/Chapter%2006)
+## License
 
-
-
+- Licensed under the MIT license
 

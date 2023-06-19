@@ -1,5 +1,6 @@
 # import necessary libraries
 import copy
+
 # # # Seaborn python library take too much place and installs Matplot, Pandas and other libraries.
 # Too much size when .exe file created.
 # decided to use ready list with 100 different colors from "reversed(sns.color_palette("husl", 100).as_hex())"
@@ -7,7 +8,7 @@ from my_colors_list import my_colors
 # for get random color from colors list
 import random
 
-# main engine
+# GUI Framework
 import tkinter as tk
 from tkinter.colorchooser import askcolor
 from tkinter.filedialog import asksaveasfile, askopenfilename
@@ -15,13 +16,15 @@ from tkinter.filedialog import asksaveasfile, askopenfilename
 # my classes for knots drawing
 import knots
 
-# my script for img PNG, GIF,
+# my script for img PNG, GIF save
 from save_pil_image import *
+# for image creations from tk.Canvas widget
+from PIL import Image
 
-# for more simple file save, open AND no meter if it Mac, Linux or Windows
+# platform independent path
 from pathlib import Path
 
-# # # after app closes we need delete folder containing snapshots files
+# after app closes, delete snapshots folder
 import atexit
 # for recursive folder deleting
 import shutil
@@ -31,11 +34,14 @@ import shutil
 # special THANKS to Bhaskar Chaudhary for time saving and understanding how Tkinter works.
 import framework
 
-# for image creations from tk.Canvas widget
-from PIL import Image
-
 #  save / read python dictionary from file correctly
 import ast
+
+# for buttons tooltip
+from idlelib.tooltip import Hovertip
+
+# open knotwizard.com in a browser
+import webbrowser
 
 
 # for basis of app i take chapter 06 from "Tkinter-GUI-Application-Development-Blueprints-Second-Edition" book
@@ -48,11 +54,12 @@ class MainProgram(framework.Framework):
                           "add_rows_top",
                           "drop_rows_top",
                           "two_colors_pattern",
-                          "mirror_pattern_array")
+                          "mirror_pattern_array",
+                          "donate")
 
     # For app to start we need threads and rows num to start knots array creation
     threads_start_num = 18
-    rows_num = 30
+    rows_num = 10
 
     # list of current app colors
     colors_list = []
@@ -134,7 +141,7 @@ class MainProgram(framework.Framework):
         self.checkCmd_2 = tk.BooleanVar()
         self.checkCmd_3 = tk.BooleanVar()
 
-        # description line 44
+        # top bar buttons number
         self.selected_toolbar_func_index = tk.IntVar()
 
         self.menubar = tk.Menu()
@@ -184,7 +191,7 @@ class MainProgram(framework.Framework):
         # pass to icons images
         icon_path = Path.cwd() / 'icons'
         # Create tuple with icons images names
-        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors', 'mirror_pattern')
+        icons = ('2plus', '2drop', 'add_rows', 'drop_rows', '2colors', 'mirror_pattern', "donate")
 
         # put buttons on top frame and take images for buttons from '/icons' folder
         for i, icon in enumerate(icons):
@@ -195,12 +202,18 @@ class MainProgram(framework.Framework):
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
 
+                # add button tooltip
+                Hovertip(tool_bar, 'add 2 threads from right')
+
             if i == 1:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
+
+                # add button tooltip
+                Hovertip(tool_bar, 'drop 2 threads from right')
 
                 # max threads number devoted by monitor width
                 self.max_threads = ((self.monitor_width - 140) // 20)
@@ -222,18 +235,18 @@ class MainProgram(framework.Framework):
                 # if user put number and hit enter in spinbox window run "self.add_drop_thread_from_right" func
                 thread_spinbox_right.bind("<Return>", (lambda event: self.add_drop_thread_from_right()))
 
-                # max threads label
-                tk.Label(self.top_frame, bg=self.main_bg_color, foreground='#42423E', font=("Arial", 7),
-                         text='MAX {}'.format(self.max_threads - 1)).pack(side='left', anchor='nw')
-
-                tk.Label(self.top_frame, bg=self.main_bg_color, width=3).pack(side='left', anchor='nw')
+                # insert Label for padding
+                tk.Label(self.top_frame, bg=self.main_bg_color, width=7).pack(side='left', anchor='nw')
 
             if i == 2:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
-                tool_bar.pack(side='left', padx=6)
+                tool_bar.pack(side='left', padx=4)
+
+                # add button tooltip
+                Hovertip(tool_bar, 'add 2 rows from top')
 
             if i == 3:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
@@ -241,6 +254,9 @@ class MainProgram(framework.Framework):
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=6)
+
+                # add button tooltip
+                Hovertip(tool_bar, 'drop 2 rows from top')
 
                 # # set variable rows to "trows_num" (if user run app first time, app needs values)
                 self.rows.set(self.rows_num)
@@ -256,11 +272,17 @@ class MainProgram(framework.Framework):
                 row_widget.bind("<Return>", lambda event: self.add_drop_rows_bottom())
 
             if i == 4:
+                # insert Label for padding
+                tk.Label(self.top_frame, bg=self.main_bg_color, width=7).pack(side='left', anchor='nw')
+
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
                 tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
                                      command=lambda i=i: self.selected_tool_bar_item(i))
                 tool_bar.image = tool_bar_icon
-                tool_bar.pack(side='left', padx=60)
+                tool_bar.pack(side='left')
+
+                # add button tooltip
+                Hovertip(tool_bar, '2 colors pattern')
 
             if i == 5:
                 tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
@@ -269,6 +291,11 @@ class MainProgram(framework.Framework):
                 tool_bar.image = tool_bar_icon
                 tool_bar.pack(side='left', padx=20)
 
+                # add button tooltip
+                Hovertip(tool_bar, 'reflect pattern')
+
+                # insert Label for padding
+                tk.Label(self.top_frame, bg=self.main_bg_color, width=4).pack(side='left', anchor='nw')
 
         # snapshots area
         self.snp_frame = tk.Frame(self.top_frame, bg=self.main_bg_color)
@@ -318,11 +345,26 @@ class MainProgram(framework.Framework):
 
         self.snp_frame.pack(side='left')
 
+        if i == 6:
+            tool_bar_icon = tk.PhotoImage(file=icon_path / '{}.gif'.format(icon))
+            tool_bar = tk.Button(self.top_frame, image=tool_bar_icon,
+                                 command=lambda i=i: self.selected_tool_bar_item(i))
+            tool_bar.image = tool_bar_icon
+            tool_bar.pack(side='right', padx=80)
+
+            # add button tooltip
+            Hovertip(tool_bar, ' Please visit\nKnotwizard.com\nand participate\nin testers program\nvalid till 22/09/23'
+                     )
+
+        self.top_frame.pack(side="left", anchor='n', expand=True, fill='both')
+
+        self.window.pack(anchor='w', fill=tk.X,)
+
         self.top_frame.pack(side="left", anchor='n')
 
         self.window.pack(anchor='w', fill=tk.X,)
 
-        # Create left frame for pattern editor 50% from monitor width and height with scrolling depend on rows number
+        # Create left frame for pattern editor 100% from monitor width and height with scrolling depend on rows number
         self.left_frame = tk.Frame(self.root,
                                    width=self.monitor_width,
                                    # for scrolling to be visible
@@ -838,8 +880,6 @@ class MainProgram(framework.Framework):
 
             self.hidden = True
 
-
-
     # COLOR PICKER
     def color_picker_pad(self):
         for i in range(self.threads.get()):
@@ -893,7 +933,6 @@ class MainProgram(framework.Framework):
                 for column in range((self.threads.get() - 1) // 2):
                     self.main_array[row].append(0)
 
-
     # COLORS
     def colors(self):
         # take colors for threads from my_colors list
@@ -909,7 +948,6 @@ class MainProgram(framework.Framework):
 
             half_colors_2 = half_colors_1[::-1]
             self.colors_list = half_colors_1 + half_colors_2
-
 
     # change color of each thread in every row and column depend on main knots array
     def threads_colors_array_handler(self):
@@ -944,7 +982,6 @@ class MainProgram(framework.Framework):
                             self.threads_colors_array[k][(column * 2) + 1] = self.threads_colors_array[row][(column * 2) + 2]
                             self.threads_colors_array[k][(column * 2) + 2] = self.threads_colors_array[row][(column * 2) + 1]
 
-
     # TOP BAR BUTTONS COMMANDS HANDLER
     def selected_tool_bar_item(self, i):
         self.selected_toolbar_func_index = i
@@ -953,7 +990,6 @@ class MainProgram(framework.Framework):
     def execute_method(self):
         fnc = getattr(self, self.tool_bar_functions[self.selected_toolbar_func_index])
         fnc()
-
 
     # ADD/DROP THREADS FROM LEFT AND RIGHT
     def add_two_thread_from_left(self):
@@ -1091,7 +1127,6 @@ class MainProgram(framework.Framework):
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-
 
     # ADD/DROP ROWS FROM TOP AND BOTTOM
     def add_rows_top(self):
@@ -1293,7 +1328,6 @@ class MainProgram(framework.Framework):
         self.draw_knots()
         self.put_buttons()
 
-
     # CHANGE ALL COLORS -> TWO COLORS and ALL EVEN ROWS KNOTS VALUE == 4 and NOT EVEN == 2
     def two_colors_pattern(self):
 
@@ -1349,7 +1383,7 @@ class MainProgram(framework.Framework):
                 return num
 
         new_array = [[check(j) for j in i] for i in copy.deepcopy(self.main_array)]
-        print(new_array)
+        # print(new_array)
 
         new_array.pop()
 
@@ -1403,7 +1437,11 @@ class MainProgram(framework.Framework):
         self.draw_knots()
         self.put_buttons()
 
-
+    # Donate button
+    def donate(self):
+        new = 1
+        url = "https://www.knotwizard.com"
+        webbrowser.open(url, new=new)
 
     # DRAWING
     def draw_threads(self):
@@ -1487,8 +1525,6 @@ class MainProgram(framework.Framework):
                         knots.Knot0(i, j * 2, self.canvas_lf)
                     else:
                         knots.Knot0(i, (j * 2) + 1, self.canvas_lf)
-
-
 
     # KNOTS BUTTONS
     def put_buttons(self):
@@ -1576,7 +1612,6 @@ class MainProgram(framework.Framework):
         self.draw_threads()
         self.draw_knots()
         self.put_buttons()
-
 
     # TOP MENU
     def create_menu(self):
@@ -1919,18 +1954,19 @@ class MainProgram(framework.Framework):
     def about_func(self):
         top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
         self.top.geometry("600x600")
-        text_1 = '\n \n KnotWizard Project \n \n' \
+        text_1 = '\n KnotWizard Project \n \n' \
                  ' The idea of the project:\n create the best friendship bracelet pattern editor. \n \n'  \
-                 ' For the latest version or donations please visit:\n  knotwizard.com \n \n' \
+                 ' For the latest stable version or donations please visit:\n  knotwizard.com \n \n' \
                  ' Application created in Python 3.10 \n \n'  \
                  ' Open source code: github.com/djindji/knotwizard \n \n' \
                  ' Version: beta 1.0\n \n' \
-                 ' Feel free to update or change.\n \n \n \n' \
+                 ' Feel free to fork.\n \n' \
                  ' Special thanks to: \n' \
                  '  Mihai Cătălin Teodosiu for Python Video Course and\n' \
                  '  Bhaskar Chaudhary for understanding how Tkinter works.\n \n \n' \
                  ' Kindest regards,\n' \
-                 '  Eduard Kruminsh'
+                 '  Eduard Kruminsh\n \n \n' \
+                 ' Licensed under the MIT license'
 
         text_window = tk.Text(top, width=600, height=600)
         text_window.insert(tk.INSERT, text_1)
@@ -1951,7 +1987,7 @@ class MainProgram(framework.Framework):
 
 def main():
     root = tk.Tk()
-    root.title('KnotWizard')
+    root.title('KnotWizard beta')
 
     data_folder = Path('icons')
     logo_file = data_folder / 'new_logo.ico'
