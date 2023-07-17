@@ -432,7 +432,8 @@ class MainProgram(framework.Framework):
                        'rows_num': self.rows.get(),
                        'knots_array': self.main_array,
                        'threads_colors_array': self.threads_colors_array,
-                       'rows_number_hidden': self.hidden}
+                       'rows_number_hidden': self.hidden,
+                       'main_bg_color': self.main_bg_color}
 
             # current directory
             current_directory = Path.cwd()
@@ -484,6 +485,9 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
+        # background color
+        self.main_bg_color = details['main_bg_color']
+
         # for scrolling work correctly app needs to redraw
         # destroy current left frame
         for widgets in self.left_frame.winfo_children():
@@ -534,7 +538,8 @@ class MainProgram(framework.Framework):
                        'rows_num': self.rows.get(),
                        'knots_array': self.main_array,
                        'threads_colors_array': self.threads_colors_array,
-                       'rows_number_hidden': self.hidden}
+                       'rows_number_hidden': self.hidden,
+                       'main_bg_color': self.main_bg_color}
 
             # current directory
             current_directory = Path.cwd()
@@ -586,6 +591,9 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
+        # background color
+        self.main_bg_color = details['main_bg_color']
+
         # for scrolling work correctly app needs to redraw
         # destroy current left frame
         for widgets in self.left_frame.winfo_children():
@@ -612,7 +620,7 @@ class MainProgram(framework.Framework):
         self.put_buttons()
 
     def on_check_2(self):
-        if self.checkCmd.get() == 0:
+        if self.checkCmd_2.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='3', bg='#bba5bc',
@@ -620,7 +628,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=6)
-        if self.checkCmd.get() == 1:
+        if self.checkCmd_2.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='3', bg='#bba5bc',
@@ -636,7 +644,8 @@ class MainProgram(framework.Framework):
                        'rows_num': self.rows.get(),
                        'knots_array': self.main_array,
                        'threads_colors_array': self.threads_colors_array,
-                       'rows_number_hidden': self.hidden}
+                       'rows_number_hidden': self.hidden,
+                       'main_bg_color': self.main_bg_color}
 
             # current directory
             current_directory = Path.cwd()
@@ -688,6 +697,9 @@ class MainProgram(framework.Framework):
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
 
+        # background color
+        self.main_bg_color = details['main_bg_color']
+
         # for scrolling work correctly app needs to redraw
         # destroy current left frame
         for widgets in self.left_frame.winfo_children():
@@ -714,7 +726,7 @@ class MainProgram(framework.Framework):
         self.put_buttons()
 
     def on_check_3(self):
-        if self.checkCmd.get() == 0:
+        if self.checkCmd_3.get() == 0:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='4', bg='#bba5bc',
@@ -722,7 +734,7 @@ class MainProgram(framework.Framework):
                       width=3,
                       state='disabled',
                       relief='flat').grid(row=0, column=8)
-        if self.checkCmd.get() == 1:
+        if self.checkCmd_3.get() == 1:
             tk.Button(self.snp_frame,
                       font=("Arial", 18, 'bold'),
                       text='4', bg='#bba5bc',
@@ -738,7 +750,8 @@ class MainProgram(framework.Framework):
                        'rows_num': self.rows.get(),
                        'knots_array': self.main_array,
                        'threads_colors_array': self.threads_colors_array,
-                       'rows_number_hidden': self.hidden}
+                       'rows_number_hidden': self.hidden,
+                       'main_bg_color': self.main_bg_color}
 
             # current directory
             current_directory = Path.cwd()
@@ -789,6 +802,9 @@ class MainProgram(framework.Framework):
 
         # show/hide rows numbers bar
         self.hidden = details['rows_number_hidden']
+
+        # background color
+        self.main_bg_color = details['main_bg_color']
 
         # for scrolling work correctly app needs to redraw
         # destroy current left frame
@@ -1270,7 +1286,7 @@ class MainProgram(framework.Framework):
                 if self.rows_num % 2 == 0:
                     self.main_array = self.main_array + add_array
                 if self.rows_num % 2 != 0:
-                    self.main_array = self.main_array + add_array.reverse()
+                    self.main_array = self.main_array + add_array[1:]
                 self.rows_num = rows_after_click
 
             # if only 1 row was added
@@ -1618,7 +1634,7 @@ class MainProgram(framework.Framework):
         self.menubar = tk.Menu(self.root)
         menu_definitions = (
             'File- &New Pattern/ /self.new_pattern, Open Pattern/ /self.open_pattern, Save Pattern/ /self.save_pattern,\
-            sep, Save As Picture/ /self.image_save, sep, Exit/ /self.exit_app',
+            sep, Save As Image/ /self.image_save, sep, Exit/ /self.exit_app',
 
             'View- &Hide Top/ /self.hide_top_bar, Show Top/ /self.show_top_bar,\
              Set Background/ /self.set_background_color ',
@@ -1752,6 +1768,9 @@ class MainProgram(framework.Framework):
 
     def save_image(self):
         save_image_test(self)
+
+        # Drop 'line_counter' var to zero
+        self.line_counter = 0
 
     def save_pattern(self):
         # create dictionary
@@ -1896,7 +1915,7 @@ class MainProgram(framework.Framework):
 
     def image_save(self):
 
-        top = self.top = tk.Toplevel(self.window, background=self.main_bg_color)
+        top = self.top = tk.Toplevel(self.window, background='#dddcd1')
         self.top.geometry("614x750")
 
         self.myEntryBox_0 = tk.Entry(top, width=34, font=("Arial", 17, 'bold'), foreground='#6E6E68')

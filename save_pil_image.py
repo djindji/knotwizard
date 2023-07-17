@@ -3,12 +3,11 @@ from PIL import Image, ImageDraw, ImageFont
 from tkinter.filedialog import asksaveasfile
 from pathlib import Path
 
-# For independents from any languages,
-# "/fonts/' folder created in app main directory with 'arial-unicode-ms.ttf' (22.7 mg) file inside
-# which will be used in every tk.Entry widgets for normal text in img saving
-# entry_font_path = Path.cwd() / "fonts" / "arial-unicode-ms.ttf"
-# entry_font = str(Path(r"{}".format(entry_font_path)))
+# Image users text font
 entry_font = ImageFont.truetype('arial.ttf', size=16, encoding="uni")
+# application links font
+entry_font_1 = ImageFont.truetype('arial.ttf', size=12, encoding="uni")
+
 # padding from top depends on : how much "tk.Entry" widgets was filled
 noempty_entr_counter = 0
 
@@ -106,12 +105,12 @@ def save_image_test(self):
 
     # App info
 
-    text = 'download pattern editor: knotwizard.com'
-    draw.text((10, 10 + (self.line_counter * 20)), text, fill='black', align="center", font=entry_font)
+    text = 'download pattern editor: KNOTWIZARD.COM'
+    draw.text((10, 10 + (self.line_counter * 20)), text, fill='black', align="center", font=entry_font_1)
     self.line_counter += 1
 
-    text_1 = 'github.com/djindji/knotwizard  (Python 3.10)'
-    draw.text((10, 10 + (self.line_counter * 20)), text_1, fill='black', align="center", font=entry_font)
+    text_1 = 'SOURCE: github.com/djindji/knotwizard  (Python 3.10)'
+    draw.text((10, 10 + (self.line_counter * 20)), text_1, fill='black', align="center", font=entry_font_1)
 
 
     # Draw rows numbers
