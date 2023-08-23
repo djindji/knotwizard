@@ -1,94 +1,105 @@
-![main](https://github.com/djindji/knotwizard/assets/85453169/ec586981-b4ff-4674-8dd7-35664639feeb)
-# Welcome to my project KNOTWIZARD!
 
-The motivation of this is project is to create
+# Welcome to KNOTWIZARD project!
+
+The motivation of this project is to create
 the best friendship bracelet patterns editor.
 
 
 ## Features
 
-Threads and Rows 
+Threads and rows
+- Add/drop threads from both sides
+- Add/drop rows from top and bottom
+- Change threads color
 
-- change threads color
-- add/drop single or many threads from right side
-- add/drop two treads from left side
-- add/drop rows from top and bottom
+Pattern
+- Horizontal and vertical rotation
+- Horizontal and vertical mirroring
+- Customizable background color
 
-View
+Pattern image
+- Save to PNG or GIF files
+- Image width and height depends on pattern dimensions
+- Change image background color
+- Add text to image
 
-- show/hide rows numbers
-- show/hide app "top bar"
-- change app background color (print background will changes too)
-
-App layer
-
+Usability
+- Undo/redo 
 - 4 snapshots
-- pattern reflection option
-- 2 colors pattern with all threads knoted by knot 2 (left to left ">")
+- Show/hide top bar and rows numbers
 
-Pattern print
+## Roadmap
 
-- save to GIF, PNG files
-- pattern optimized for save (width and height depends on pattern dimensions) 
-- save pattern image with text attributes 
-- change pattern image background color
+- Test and optimize
+- Add more features for patterns creation
 
-Pattern 
-
-- save/open .kwn (it's simple .txt file which notepad can edit)
-
-
-
-## Roadmap 
-
-- Rotate pattern 90 degrees (horizontaly)
-
-- Implement "Conways’s Game Of Life" and ather mathematical functions for pattern creation
-
-- Connect to ML (in a core a pattern is 2d array with Base 5)
-- Create Plugin or separate app to convert image to pattern (like "handwritten text recognition" Python projects)  
-- Create pattern to image Plugin or separate app 
-- add posability (buttons) to change all not knoted threads to knot 1, 2, 3  or 4 (espesialy useful for 2 colors patterns)
-- add posability (buttons) to reflect design horizontaly and 45 degrees
 
 ## Tech Stack
 
-Python 3.9.1 and greater
+Python 3.10 and greater
 - Tkinter (GUI Framework)
-- Pillow (for pattern print save)
+- Pillow (for pattern image creation)
+
 
 ## Run Locally
-Windows
+ **Windows .EXE file**
+- Download the latest version from project's website https://knotwizard.com
 
-- Download latest stable .EXE file from knotwizard.com
+ **Run python code on all platforms**
 
-Run as Python app
+Clone the project
 
-- Create new project in PyCharm like programm (it will create virtual environment and all stuff automaticaly)
-- Copy repositary files to project folder
-- install necessary libraries
+```bash
+  git clone https://github.com/djindji/knotwizard
+```
 
+Go to the project directory
+
+```bash
+  cd knotwizard
+```
+
+Install Tkinter
+- Tkinter is the standard Python interface to the Tk GUI toolkit, 
+and is Python's de facto standard GUI. Tkinter is included with standard Linux, Microsoft Windows and 
+macOS installs of Python, **BUT not in Ubuntu**. So if it's not included use this command:
+```bash
+  sudo apt install python3-tk
+```
+Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+Start the app
+
+```bash
+  python main.py 
+```
 ## Quick start guide and tutorial
 
-- See the tutorial on our official site! [knotwizard](https://knotwizard.com) to help you get your new project up and running!
-
-## User interface
-
-![help](https://github.com/djindji/knotwizard/assets/85453169/798fae15-9046-453c-9340-5a5372add3d9)
-
-## Other
-
-Disclaimer:
-- As per the MIT license, I assume no liability for any damage to you or any other person or equipment.
+- See tutorials and latest project info on [knotwizard.com](https://knotwizard.com).
 
 ## Credits
 - THANKS to Mihai Cătălin Teodosiu for Python Video Courses
 
 - THANKS to Bhaskar Chaudhary for time saving and understanding how Tkinter works.
 For main menu framework script from chapter 6 was used
-
 [Tkinter-GUI-Application-Development-Blueprints-Second-Edition](https://github.com/PacktPublishing/Tkinter-GUI-Application-Development-Blueprints-Second-Edition/tree/master/Chapter%2006)
+
+
 ## License
 
 - Licensed under the MIT license
+
+## Other
+
+Disclaimer:
+- As per the MIT license, I assume no liability for any damage to you or any other person or equipment.
+
+
+
+
+
 

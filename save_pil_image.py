@@ -2,26 +2,27 @@
 from PIL import Image, ImageDraw, ImageFont
 from tkinter.filedialog import asksaveasfile
 from pathlib import Path
+import sys
 
-# Image users text font
-entry_font = ImageFont.truetype('arial.ttf', size=16, encoding="uni")
-# application links font
-entry_font_1 = ImageFont.truetype('arial.ttf', size=12, encoding="uni")
+if sys.platform.startswith('win'):
+    entry_font = ImageFont.truetype('arial.ttf', size=12)
 
-# padding from top depends on : how much "tk.Entry" widgets was filled
-noempty_entr_counter = 0
-
+else:
+    entry_font = ImageFont.load_default()
 
 
-
-def save_image_test(self):
+def save_pattern_to_img(self):
     # get dimensions and all children of "self.canvas_lf" tk.Canvas widget
     x1, y1, x2, y2 = self.canvas_lf.bbox('all')
 
     # create dimensions for image
-    w, h = x2 - x1 + 50, (self.rows_num * 41) + 400
-    # print("image dimensions", w, h)
+    if self.vert_view:
+        w, h = x2 - x1 + 50, (self.rows_num * 41) + 800
+    else:
+        w, h = y2 - y1 + 50, (self.rows_num * 41) + 800
 
+    if w < 405:
+        w = 405
     # store the graphical representation of "self.canvas_lf" to file "Result.eps"
     self.canvas_lf.postscript(file="Result.eps", x=x1, y=y1, width=w, height=h, pagewidth=w, pageheight=h)
 
@@ -34,11 +35,29 @@ def save_image_test(self):
     # draw to object
     draw = ImageDraw.Draw(image1)
 
+    # 'info text'
+    text = "KnotWizard project:\n\nLet's create the best\n friendship bracelet pattern editor. \n\n"  \
+           ' For the latest stable version or \ndonations  please visit:\n knotwizard.com \n\n' \
+           ' Application created in Python 3.10 \n'  \
+           ' Open source code:\n  github.com/djindji/knotwizard \n \n' \
+           ' Feel free to fork.\n\n' \
+           '                     Kindest regards,\n' \
+           '                                  Eduard Kruminsh'
+
+    draw.text(((w // 2) - 94, 10), text, fill='black', align="center", font=entry_font, encoding="uni")
+
+    # draw underline
+    cur_x = 0
+    cur_y = 310
+    image_width = w
+    for x in range(cur_x, image_width, 14):
+        draw.line([(x, cur_y), (x + 7, cur_y)], fill='black')
+
     # # User info input area
     # read tk.Entry widgets (self.myEntryBox_(0-12) if not empty and increase line_counter by 1
     if self.myEntryBox_0.get():
         # text attributes
-        draw.text((10, 10), self.myEntryBox_0.get(), fill='#2C2C29', align="right",
+        draw.text((10, 10 + (self.line_counter * 20)), self.myEntryBox_0.get(), fill='#2C2C29', align="right",
                   font=entry_font)
         # increase line_counter by 1
         self.line_counter += 1
@@ -103,16 +122,6 @@ def save_image_test(self):
                   font=entry_font)
         self.line_counter += 1
 
-    # App info
-
-    text = 'download pattern editor: KNOTWIZARD.COM'
-    draw.text((10, 10 + (self.line_counter * 20)), text, fill='black', align="center", font=entry_font_1)
-    self.line_counter += 1
-
-    text_1 = 'SOURCE: github.com/djindji/knotwizard  (Python 3.10)'
-    draw.text((10, 10 + (self.line_counter * 20)), text_1, fill='black', align="center", font=entry_font_1)
-
-
     # Draw rows numbers
     for i in range(self.rows.get()):
         label_row_pad = 30
@@ -142,7 +151,7 @@ def save_image_test(self):
                    (16 * center) + 70, ((self.line_counter * 20) + 90)],
                   fill='grey', width=2)
 
-    # Draw lines
+    # Draw lines/threads
     for i in range(self.rows.get()):
         for j in range(self.threads.get()):
             color_num = self.threads_colors_array[i][j]
@@ -153,12 +162,13 @@ def save_image_test(self):
 
     # create Classes for knots drawing
     class PilKnot1:
-        def __init__(self, color, color_1, row_position, column_position, counter):
-            self.color = color
-            self.color_1 = color_1
+        def __init__(self, color1, color2, row_position, column_position, counter, bg_color):
+            self.color = color1
+            self.color_1 = color2
             self.row_position = row_position
             self.column_position = column_position
             self.counter = counter
+            self.bg_color = bg_color
             self.draw()
 
         def draw(self):
@@ -166,7 +176,7 @@ def save_image_test(self):
                            (self.row_position * 38) + (self.counter * 20) + 114),
                           ((16 * self.column_position) + 89,
                            (self.row_position * 38) + ((self.counter * 20) + 152))]
-            draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
+            draw.ellipse(oval_shape, fill=self.bg_color, width=4, outline=self.color)
 
             line_shape = [((16 * self.column_position) + 71,
                            (self.row_position * 38) + ((self.counter * 20) + 124)),
@@ -174,24 +184,13 @@ def save_image_test(self):
                            (self.row_position * 38) + ((self.counter * 20) + 147))]
             draw.line(line_shape, fill=self.color, width=5)
 
-            # line_shape = [((18 * self.column_position) + 70,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 140)),
-            #               ((18 * self.column_position) + 70,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 148))]
-            # draw.line(line_shape, fill=self.color_1, width=2)
-            #
-            # line_shape = [((18 * self.column_position) + 90,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 140)),
-            #               ((18 * self.column_position) + 90,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 148))]
-            # draw.line(line_shape, fill=self.color, width=2)
-
     class PilKnot2:
-        def __init__(self, color, row_position, column_position, counter):
-            self.color = color
+        def __init__(self, color1, row_position, column_position, counter, bg_color):
+            self.color = color1
             self.row_position = row_position
             self.column_position = column_position
             self.counter = counter
+            self.bg_color = bg_color
             self.draw()
 
         def draw(self):
@@ -199,7 +198,7 @@ def save_image_test(self):
                            (self.row_position * 38) + (self.counter * 20) + 114),
                           ((16 * self.column_position) + 89,
                            (self.row_position * 38) + ((self.counter * 20) + 152))]
-            draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
+            draw.ellipse(oval_shape, fill=self.bg_color, width=4, outline=self.color)
 
             line_shape = [((16 * self.column_position) + 71,
                            (self.row_position * 38) + ((self.counter * 20) + 120)),
@@ -214,12 +213,13 @@ def save_image_test(self):
             draw.line(line_shape, fill=self.color, width=6)
 
     class PilKnot3:
-        def __init__(self, color, color_1, row_position, column_position, counter):
-            self.color = color
-            self.color_1 = color_1
+        def __init__(self, color1, color2, row_position, column_position, counter, bg_color):
+            self.color = color1
+            self.color_1 = color2
             self.row_position = row_position
             self.column_position = column_position
             self.counter = counter
+            self.bg_color = bg_color
             self.draw()
 
         def draw(self):
@@ -227,7 +227,7 @@ def save_image_test(self):
                            (self.row_position * 38) + (self.counter * 20) + 114),
                           ((16 * self.column_position) + 89,
                            (self.row_position * 38) + ((self.counter * 20) + 152))]
-            draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
+            draw.ellipse(oval_shape, fill=self.bg_color, width=4, outline=self.color)
 
             line_shape = [((16 * self.column_position) + 87,
                            (self.row_position * 38) + ((self.counter * 20) + 124)),
@@ -235,30 +235,13 @@ def save_image_test(self):
                            (self.row_position * 38) + ((self.counter * 20) + 147))]
             draw.line(line_shape, fill=self.color, width=5)
 
-            # line_shape = [((20 * self.column_position) + 90,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 109)),
-            #               ((20 * self.column_position) + 69,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130))]
-            # draw.line(line_shape, fill=self.color, width=5)
-            #
-            # line_shape = [((20 * self.column_position) + 70,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-            #               ((20 * self.column_position) + 70,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            # draw.line(line_shape, fill=self.color, width=2)
-            #
-            # line_shape = [((20 * self.column_position) + 90,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 130)),
-            #               ((20 * self.column_position) + 90,
-            #                (self.row_position * 38) + (10 + (self.counter * 20) + 138))]
-            # draw.line(line_shape, fill=self.color_1, width=2)
-
     class PilKnot4:
-        def __init__(self, color, row_position, column_position, counter):
-            self.color = color
+        def __init__(self, color1, row_position, column_position, counter, bg_color):
+            self.color = color1
             self.row_position = row_position
             self.column_position = column_position
             self.counter = counter
+            self.bg_color = bg_color
             self.draw()
 
         def draw(self):
@@ -266,7 +249,7 @@ def save_image_test(self):
                            (self.row_position * 38) + (self.counter * 20) + 114),
                           ((16 * self.column_position) + 89,
                            (self.row_position * 38) + ((self.counter * 20) + 152))]
-            draw.ellipse(oval_shape, fill='#DDDCD1', width=4, outline=self.color)
+            draw.ellipse(oval_shape, fill=self.bg_color, width=4, outline=self.color)
 
             line_shape = [((16 * self.column_position) + 86,
                            (self.row_position * 38) + ((self.counter * 20) + 120)),
@@ -291,7 +274,7 @@ def save_image_test(self):
 
                     right_thread = self.threads_colors_array[i][j * 2 + 1]
                     color_1 = self.colors_list[right_thread]
-                    PilKnot1(color, color_1, i, j * 2, self.line_counter)
+                    PilKnot1(color, color_1, i, j * 2, self.line_counter, self.main_bg_color)
                 else:
                     left_thread = self.threads_colors_array[i][(j * 2) + 1]
                     color_num = left_thread
@@ -300,19 +283,19 @@ def save_image_test(self):
                     right_thread = self.threads_colors_array[i][(j * 2) + 2]
                     color_1 = self.colors_list[right_thread]
 
-                    PilKnot1(color, color_1, i, (j * 2) + 1, self.line_counter)
+                    PilKnot1(color, color_1, i, (j * 2) + 1, self.line_counter, self.main_bg_color)
 
             if self.main_array[i][j] == 2:
                 if i % 2 == 0:
                     left_thread = self.threads_colors_array[i][j * 2]
                     color_num = left_thread
                     color = self.colors_list[color_num]
-                    PilKnot2(color, i, j * 2, self.line_counter)
+                    PilKnot2(color, i, j * 2, self.line_counter, self.main_bg_color)
                 else:
                     left_thread = self.threads_colors_array[i][(j * 2) + 1]
                     color_num = left_thread
                     color = self.colors_list[color_num]
-                    PilKnot2(color, i, (j * 2) + 1, self.line_counter)
+                    PilKnot2(color, i, (j * 2) + 1, self.line_counter, self.main_bg_color)
 
             if self.main_array[i][j] == 3:
                 if i % 2 == 0:
@@ -322,7 +305,7 @@ def save_image_test(self):
 
                     left_thread = self.threads_colors_array[i][(j * 2)]
                     color_1 = self.colors_list[left_thread]
-                    PilKnot3(color, color_1, i, j * 2, self.line_counter)
+                    PilKnot3(color, color_1, i, j * 2, self.line_counter, self.main_bg_color)
                 else:
                     right_thread = self.threads_colors_array[i][(j * 2) + 2]
                     color_num = right_thread
@@ -330,32 +313,28 @@ def save_image_test(self):
 
                     left_thread = self.threads_colors_array[i][(j * 2) + 1]
                     color_1 = self.colors_list[left_thread]
-                    PilKnot3(color, color_1, i, (j * 2) + 1, self.line_counter)
+                    PilKnot3(color, color_1, i, (j * 2) + 1, self.line_counter, self.main_bg_color)
 
             if self.main_array[i][j] == 4:
                 if i % 2 == 0:
                     left_thread = self.threads_colors_array[i][j * 2 + 1]
                     color_num = left_thread
                     color = self.colors_list[color_num]
-                    PilKnot4(color, i, j * 2, self.line_counter)
+                    PilKnot4(color, i, j * 2, self.line_counter, self.main_bg_color)
                 else:
                     left_thread = self.threads_colors_array[i][(j * 2) + 2]
                     color_num = left_thread
                     color = self.colors_list[color_num]
-                    PilKnot4(color, i, (j * 2) + 1, self.line_counter)
+                    PilKnot4(color, i, (j * 2) + 1, self.line_counter, self.main_bg_color)
+
+    # current directory
+    current_directory = Path.cwd()
 
     # file save open dialog
-    file = asksaveasfile(mode='w', initialfile='my_bracelet.png', defaultextension=".png",
-                         filetypes=(("PNG file", "*.png"), ("GIF file", "*.gif"), ("JPG file", "*.jpg"),
-                                    ("BMP file", "*.bmp"), ("All Files", "*.*")))
+    file = asksaveasfile(mode='w', initialfile='my_bracelet.png', defaultextension=".png", initialdir=current_directory,
+                         filetypes=(("PNG file", "*.png"), ("GIF file", "*.gif")))
 
     # save image object to the file
     if file:
         file_path = Path(file.name)
         image1.save(file_path, quality='keep')
-
-
-
-
-
-
