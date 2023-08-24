@@ -48,8 +48,8 @@ Python 3.10 and greater
 - Download the latest version from project's website https://knotwizard.com
 
  **Run python code on all platforms**
-
-Clone the project
+- Make sure you have Python installed. Install Python at [python.org](https://www.python.org/).
+- Clone the project
 
 ```bash
   git clone https://github.com/djindji/knotwizard
