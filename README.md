@@ -3,6 +3,7 @@
 
 The motivation of this project is to create
 the best friendship bracelet patterns editor.
+![knotwizard_screen](https://github.com/djindji/knotwizard/assets/85453169/437e3e2f-4642-4abc-a7d0-fa245af0c24f)
 
 
 ## Features
