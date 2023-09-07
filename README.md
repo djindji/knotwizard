@@ -3,6 +3,7 @@
 
 **The motivation of this project is to create
 the best friendship bracelet patterns editor.**
+## A video is worth a thousand words
 
 [![Video](https://img.youtube.com/vi/IB46PSBwBvE/maxresdefault.jpg)](https://www.youtube.com/watch?v=IB46PSBwBvE)
 
@@ -34,6 +35,13 @@ Usability
 
 - Test and optimize
 - Add more features for patterns creation
+- Add pattern zoom
+- Add snapshots to pattern save/open
+- Show/hide empty knots symbols (“x”)
+- Add skins for knots
+- Create frame(window) with different pattern colors and knots variations. Let to Python create knitting designs.
+- Connect machine learning to knitting pattern creation. In the core it 2d array with Base 5 numeral system.
+
 
 
 ## Tech Stack
@@ -45,7 +53,7 @@ Python 3.10 and greater
 
 ## Run Locally
  **Windows .EXE file**
-- Download the latest version from project's website https://knotwizard.com
+- Download the latest version from project's release or website https://knotwizard.com 
 
  **Run python code on all platforms**
 - Make sure you have Python installed. Install Python at [python.org](https://www.python.org/).
